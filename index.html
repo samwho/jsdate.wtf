@@ -6,25 +6,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JS Date WTF - The JavaScript Date Quiz</title>
   <style>
+    /* Dark theme (default) */
     :root {
-      /* Colors */
-      --color-primary: #4ade80;
-      --color-primary-hover: #22c55e;
-      --color-secondary: #3b82f6;
-      --color-secondary-hover: #2563eb;
-      --color-bg-dark: #1a1a1a;
-      --color-bg-medium: #2a2a2a;
-      --color-bg-light: #3a3a3a;
-      --color-bg-lighter: #4a4a4a;
-      --color-text-primary: #e0e0e0;
-      --color-text-secondary: #9ca3af;
-      --color-border: #444;
-      --color-border-hover: #666;
-      --color-border-light: #555;
-      --color-error: #ef4444;
-      --color-correct-bg: #2d4a2d;
-      --color-incorrect-bg: #4a2d2d;
-      
+      /* Colors - Wong Color Palette (Colorblind Friendly) */
+      --color-primary: #E69F00;
+      /* Orange */
+      --color-primary-hover: #CC8800;
+      /* Darker Orange */
+      --color-secondary: #0072B2;
+      /* Blue */
+      --color-secondary-hover: #005A8F;
+      /* Darker Blue */
+      --color-bg-dark: #0F0F0F;
+      /* Near Black */
+      --color-bg-medium: #1A1A1A;
+      /* Dark Gray */
+      --color-bg-light: #2A2A2A;
+      /* Medium Gray */
+      --color-bg-lighter: #3A3A3A;
+      /* Light Gray */
+      --color-text-primary: #F5F5F5;
+      /* Off White */
+      --color-text-secondary: #B0B0B0;
+      /* Light Gray Text */
+      --color-border: #404040;
+      /* Border Gray */
+      --color-border-hover: #505050;
+      /* Hover Border Gray */
+      --color-border-light: #484848;
+      /* Light Border Gray */
+      --color-error: #D55E00;
+      /* Vermillion/Red-Orange */
+      --color-correct-bg: rgba(0, 158, 115, 0.15);
+      /* Green tint with transparency */
+      --color-incorrect-bg: rgba(213, 94, 0, 0.15);
+      /* Vermillion tint with transparency */
+      --color-accent-green: #009E73;
+      /* Green from Wong palette */
+      --color-code-bg: #0F0F0F;
+      /* Code block background */
+      --shadow-strength: 0.5;
+
+      /* Syntax highlighting colors */
+      --syntax-keyword: #56B4E9;
+      /* Sky Blue from Wong palette */
+      --syntax-string: #009E73;
+      /* Green from Wong palette */
+      --syntax-number: #F0E442;
+      /* Yellow from Wong palette */
+      --syntax-operator: #CC79A7;
+      /* Pink from Wong palette */
+      --syntax-function: #E69F00;
+      /* Orange from Wong palette */
+      --syntax-comment: #B0B0B0;
+      /* Gray */
+
       /* Spacing */
       --spacing-xs: 4px;
       --spacing-sm: 8px;
@@ -34,10 +70,10 @@
       --spacing-2xl: 25px;
       --spacing-3xl: 30px;
       --spacing-4xl: 40px;
-      
+
       /* Typography */
-      --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: 'Courier New', monospace;
+      --font-system: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+      --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
       --font-size-sm: 0.9em;
       --font-size-base: 1em;
       --font-size-lg: 1.1em;
@@ -45,28 +81,84 @@
       --font-size-2xl: 2.5em;
       --font-size-3xl: 3em;
       --line-height: 1.6;
-      
+
       /* Border Radius */
       --radius-sm: 4px;
       --radius-md: 8px;
       --radius-lg: 12px;
-      
+
       /* Transitions */
       --transition-fast: 0.2s ease;
-      
+
       /* Shadows */
-      --shadow-default: 0 4px 20px rgba(0, 0, 0, 0.3);
-      
+      --shadow-default: 0 4px 20px rgba(0, 0, 0, var(--shadow-strength));
+      --shadow-subtle: 0 2px 8px rgba(0, 0, 0, calc(var(--shadow-strength) * 0.6));
+
       /* Layout */
       --container-max-width: 600px;
-      
+
       /* Borders */
       --border-thin: 1px;
       --border-medium: 2px;
       --border-thick: 4px;
-      
+
       /* Components */
       --option-key-size: 30px;
+    }
+
+    /* Light theme */
+    [data-theme="light"] {
+      --color-primary: #CC7A00;
+      /* Darker Orange for better contrast */
+      --color-primary-hover: #B36A00;
+      /* Even darker Orange */
+      --color-secondary: #005A8F;
+      /* Darker Blue for better contrast */
+      --color-secondary-hover: #004A7A;
+      /* Even darker Blue */
+      --color-bg-dark: #FFFFFF;
+      /* White */
+      --color-bg-medium: #F7F7F7;
+      /* Light Gray */
+      --color-bg-light: #EFEFEF;
+      /* Medium Gray */
+      --color-bg-lighter: #E5E5E5;
+      /* Darker Gray */
+      --color-text-primary: #1A1A1A;
+      /* Near Black */
+      --color-text-secondary: #606060;
+      /* Gray Text */
+      --color-border: #D0D0D0;
+      /* Light Border */
+      --color-border-hover: #B0B0B0;
+      /* Hover Border */
+      --color-border-light: #C0C0C0;
+      /* Light Border */
+      --color-error: #D55E00;
+      /* Vermillion/Red-Orange */
+      --color-correct-bg: rgba(0, 158, 115, 0.1);
+      /* Green tint with transparency */
+      --color-incorrect-bg: rgba(213, 94, 0, 0.1);
+      /* Vermillion tint with transparency */
+      --color-accent-green: #009E73;
+      /* Green from Wong palette */
+      --color-code-bg: #F5F5F5;
+      /* Light code background */
+      --shadow-strength: 0.15;
+
+      /* Syntax highlighting colors for light mode */
+      --syntax-keyword: #0072B2;
+      /* Blue from Wong palette */
+      --syntax-string: #009E73;
+      /* Green from Wong palette */
+      --syntax-number: #CC7A00;
+      /* Darker orange for contrast */
+      --syntax-operator: #D55E00;
+      /* Vermillion from Wong palette */
+      --syntax-function: #CC7A00;
+      /* Darker orange for contrast */
+      --syntax-comment: #606060;
+      /* Gray */
     }
 
     * {
@@ -124,15 +216,44 @@
     }
 
     .code-block {
-      background-color: var(--color-bg-dark);
+      background-color: var(--color-code-bg);
       border: var(--border-thin) solid var(--color-border);
       border-radius: var(--radius-md);
       padding: var(--spacing-xl);
       margin-bottom: var(--spacing-2xl);
       font-family: var(--font-mono);
       font-size: var(--font-size-lg);
-      color: var(--color-primary);
+      color: var(--color-text-primary);
       overflow-x: auto;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, calc(var(--shadow-strength) * 0.6));
+    }
+
+    /* Syntax highlighting styles */
+    .syntax-keyword {
+      color: var(--syntax-keyword);
+      font-weight: bold;
+    }
+
+    .syntax-string {
+      color: var(--syntax-string);
+    }
+
+    .syntax-number {
+      color: var(--syntax-number);
+    }
+
+    .syntax-operator {
+      color: var(--syntax-operator);
+    }
+
+    .syntax-function {
+      color: var(--syntax-function);
+      font-weight: bold;
+    }
+
+    .syntax-comment {
+      color: var(--syntax-comment);
+      font-style: italic;
     }
 
     .options {
@@ -162,11 +283,12 @@
 
     .option.selected {
       border-color: var(--color-primary);
-      background-color: var(--color-correct-bg);
+      background-color: rgba(230, 159, 0, 0.15);
+      /* Orange tint */
     }
 
     .option.correct {
-      border-color: var(--color-primary);
+      border-color: var(--color-accent-green);
       background-color: var(--color-correct-bg);
     }
 
@@ -203,7 +325,7 @@
       padding: var(--spacing-lg);
       background-color: var(--color-bg-light);
       border-radius: var(--radius-md);
-      border-left: var(--border-thick) solid var(--color-primary);
+      border-left: var(--border-thick) solid var(--color-accent-green);
       display: none;
     }
 
@@ -307,10 +429,81 @@
     .toast.show {
       opacity: 1;
     }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: var(--spacing-xl);
+      right: var(--spacing-xl);
+      background-color: var(--color-bg-light);
+      border: var(--border-medium) solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+    }
+
+    .theme-toggle:hover {
+      background-color: var(--color-bg-lighter);
+      border-color: var(--color-border-hover);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle:active {
+      transform: translateY(0);
+    }
+
+    .theme-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    /* Hide/show icons based on theme */
+    [data-theme="light"] .moon-icon {
+      display: none;
+    }
+
+    [data-theme="dark"] .sun-icon,
+    :root:not([data-theme]) .sun-icon {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .theme-toggle {
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Theme toggle button -->
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+    <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+
   <div class="container">
     <header>
       <h1>new Date("wtf")</h1>
@@ -318,7 +511,8 @@
     </header>
 
     <div id="startScreen" class="start-screen">
-      <p style="margin-bottom: var(--spacing-3xl);">Think you understand JavaScript's Date constructor? Think again! This quiz
+      <p style="margin-bottom: var(--spacing-3xl);">Think you understand JavaScript's Date constructor? Think again!
+        This quiz
         explores the bizarre and unexpected behaviors of Date parsing.</p>
       <button class="button" onclick="startQuiz()">Start Quiz</button>
     </div>
@@ -352,7 +546,162 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    const questions = [
+    // Theme management
+    function getTheme() {
+      return localStorage.getItem('theme') || 'dark';
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = getTheme();
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      setTheme(newTheme);
+    }
+
+    // Initialize theme on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      setTheme(getTheme());
+    });
+
+    // Also set theme immediately to prevent flash
+    setTheme(getTheme());
+
+    // JavaScript syntax highlighter with proper tokenization
+    function highlightJS(code) {
+      const keywords = new Set([
+        'new', 'function', 'var', 'let', 'const', 'if', 'else', 'for', 'while', 'do',
+        'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally',
+        'throw', 'typeof', 'instanceof', 'in', 'of', 'class', 'extends', 'super',
+        'static', 'import', 'export', 'from', 'default', 'async', 'await', 'yield',
+        'delete', 'void', 'this', 'null', 'undefined', 'true', 'false'
+      ]);
+
+      const operators = new Set([
+        '+', '-', '*', '/', '%', '=', '!', '<', '>', '&', '|', '^', '~', '?', ':',
+        ';', ',', '.', '(', ')', '[', ']', '{', '}'
+      ]);
+
+      // No need to escape HTML since we control all the code content
+
+      function tokenize(code) {
+        const tokens = [];
+        let i = 0;
+
+        while (i < code.length) {
+          const char = code[i];
+
+          // Skip whitespace
+          if (/\s/.test(char)) {
+            let whitespace = '';
+            while (i < code.length && /\s/.test(code[i])) {
+              whitespace += code[i];
+              i++;
+            }
+            tokens.push({ type: 'whitespace', value: whitespace });
+            continue;
+          }
+
+          // String literals
+          if (char === '"' || char === "'") {
+            const quote = char;
+            let string = char;
+            i++;
+
+            while (i < code.length && code[i] !== quote) {
+              if (code[i] === '\\' && i + 1 < code.length) {
+                string += code[i] + code[i + 1];
+                i += 2;
+              } else {
+                string += code[i];
+                i++;
+              }
+            }
+
+            if (i < code.length) {
+              string += code[i]; // closing quote
+              i++;
+            }
+
+            tokens.push({ type: 'string', value: string });
+            continue;
+          }
+
+          // Numbers
+          if (/\d/.test(char)) {
+            let number = '';
+            while (i < code.length && /[\d.]/.test(code[i])) {
+              number += code[i];
+              i++;
+            }
+            tokens.push({ type: 'number', value: number });
+            continue;
+          }
+
+          // Identifiers and keywords
+          if (/[a-zA-Z_$]/.test(char)) {
+            let identifier = '';
+            while (i < code.length && /[a-zA-Z0-9_$]/.test(code[i])) {
+              identifier += code[i];
+              i++;
+            }
+
+            // Check if it's followed by parentheses (function call)
+            let j = i;
+            while (j < code.length && /\s/.test(code[j])) j++;
+
+            if (j < code.length && code[j] === '(') {
+              tokens.push({ type: 'function', value: identifier });
+            } else if (keywords.has(identifier)) {
+              tokens.push({ type: 'keyword', value: identifier });
+            } else {
+              tokens.push({ type: 'identifier', value: identifier });
+            }
+            continue;
+          }
+
+          // Operators and punctuation
+          if (operators.has(char)) {
+            tokens.push({ type: 'operator', value: char });
+            i++;
+            continue;
+          }
+
+          // Everything else
+          tokens.push({ type: 'other', value: char });
+          i++;
+        }
+
+        return tokens;
+      }
+
+      function tokensToHtml(tokens) {
+        return tokens.map(token => {
+          switch (token.type) {
+            case 'keyword':
+              return `<span class="syntax-keyword">${token.value}</span>`;
+            case 'string':
+              return `<span class="syntax-string">${token.value}</span>`;
+            case 'number':
+              return `<span class="syntax-number">${token.value}</span>`;
+            case 'function':
+              return `<span class="syntax-function">${token.value}</span>`;
+            case 'operator':
+              return `<span class="syntax-operator">${token.value}</span>`;
+            default:
+              return token.value;
+          }
+        }).join('');
+      }
+
+      const tokens = tokenize(code);
+      return tokensToHtml(tokens);
+    }
+
+    const rawQuestions = [
       // Basic number/string confusion
       {
         code: 'new Date("0")',
@@ -588,6 +937,12 @@
       }
     ];
 
+    // Pre-process all questions to add syntax highlighting
+    const questions = rawQuestions.map(question => ({
+      ...question,
+      highlightedCode: highlightJS(question.code)
+    }));
+
     let currentQuestionIndex = 0;
     let score = 0;
     let answered = false;
@@ -602,7 +957,7 @@
     function showQuestion() {
       const question = questions[currentQuestionIndex];
       document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
-      document.getElementById('codeBlock').textContent = question.code;
+      document.getElementById('codeBlock').innerHTML = question.highlightedCode;
 
       const optionsContainer = document.getElementById('options');
       optionsContainer.innerHTML = '';
