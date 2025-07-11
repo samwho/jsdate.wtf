@@ -54,8 +54,8 @@
       /* Green from Wong palette */
       --syntax-number: #F0E442;
       /* Yellow from Wong palette */
-      --syntax-operator: #CC79A7;
-      /* Pink from Wong palette */
+      --syntax-operator: #B0B0B0;
+      /* Grey for operators and punctuation */
       --syntax-function: #E69F00;
       /* Orange from Wong palette */
       --syntax-comment: #B0B0B0;
@@ -171,24 +171,52 @@
       font-family: var(--font-system);
       background-color: var(--color-bg-dark);
       color: var(--color-text-primary);
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: var(--spacing-xl);
       line-height: var(--line-height);
+      overflow: hidden;
     }
 
     .container {
       max-width: 800px;
       width: 100%;
       text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     header {
       text-align: center;
       margin-bottom: var(--spacing-4xl);
+    }
+
+    /* Hide header during quiz and results */
+    #quizScreen:not(.hidden)~.container header,
+    #resultsScreen:not(.hidden)~.container header,
+    .quiz-active header {
+      display: none;
+    }
+
+    /* Compact layout for quiz screens */
+    .quiz-layout {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100vh;
+      padding: var(--spacing-xl) 0;
+    }
+
+    .quiz-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     h1 {
@@ -206,24 +234,29 @@
     }
 
     .progress {
-      margin-bottom: var(--spacing-4xl);
+      margin-bottom: var(--spacing-xl);
       text-align: center;
       color: var(--color-text-secondary);
-      font-size: var(--font-size-lg);
+      font-size: var(--font-size-base);
+      position: absolute;
+      top: var(--spacing-xl);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
     }
 
     .question-container {
-      margin-bottom: var(--spacing-4xl);
+      margin-bottom: var(--spacing-xl);
     }
 
     .code-block {
       background-color: var(--color-code-bg);
       border: var(--border-medium) solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: var(--spacing-3xl);
-      margin-bottom: var(--spacing-4xl);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
       font-family: var(--font-mono);
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       color: var(--color-text-primary);
       overflow-x: auto;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, calc(var(--shadow-strength) * 0.6));
@@ -263,7 +296,7 @@
     .options {
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-xl);
+      gap: var(--spacing-lg);
       max-width: 600px;
       margin: 0 auto;
     }
@@ -272,14 +305,14 @@
       background-color: var(--color-bg-light);
       border: var(--border-medium) solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: var(--spacing-xl) var(--spacing-2xl);
+      padding: var(--spacing-lg) var(--spacing-xl);
       cursor: pointer;
       transition: all var(--transition-fast);
       display: flex;
       align-items: center;
-      gap: var(--spacing-xl);
+      gap: var(--spacing-lg);
       position: relative;
-      font-size: var(--font-size-lg);
+      font-size: var(--font-size-base);
     }
 
     .option:hover:not(.disabled) {
@@ -312,15 +345,15 @@
     .option-key {
       background-color: var(--color-border-light);
       color: var(--color-text-primary);
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       flex-shrink: 0;
-      font-size: var(--font-size-lg);
+      font-size: var(--font-size-base);
     }
 
     .option-text {
@@ -329,30 +362,77 @@
     }
 
     .explanation {
-      margin-top: var(--spacing-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
       padding: var(--spacing-lg);
+      padding-left: calc(var(--spacing-lg) + 40px);
+      /* Extra space for icon */
       background-color: var(--color-bg-light);
       border-radius: var(--radius-md);
       border-left: var(--border-thick) solid var(--color-accent-green);
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition-fast), visibility var(--transition-fast);
+      font-size: var(--font-size-lg);
+      position: relative;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      min-height: 100px;
+      /* Reserve minimum space */
     }
 
-    .explanation.show {
-      display: block;
+    .explanation.correct {
+      border-left-color: var(--color-accent-green);
+      background-color: var(--color-correct-bg);
     }
+
+    .explanation.incorrect {
+      border-left-color: var(--color-error);
+      background-color: var(--color-incorrect-bg);
+    }
+
+    .explanation-icon {
+      position: absolute;
+      top: 50%;
+      left: var(--spacing-lg);
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .explanation-icon.correct {
+      background-color: var(--color-accent-green);
+      color: white;
+    }
+
+    .explanation-icon.incorrect {
+      background-color: var(--color-error);
+      color: white;
+    }
+
 
     .button {
       background-color: var(--color-primary);
       color: var(--color-bg-dark);
       border: none;
       border-radius: var(--radius-lg);
-      padding: var(--spacing-xl) var(--spacing-4xl);
-      font-size: var(--font-size-xl);
+      padding: var(--spacing-lg) var(--spacing-3xl);
+      font-size: var(--font-size-lg);
       font-weight: bold;
       cursor: pointer;
       transition: all var(--transition-fast);
-      margin-top: var(--spacing-4xl);
-      max-width: 300px;
+      margin-top: var(--spacing-xl);
+      max-width: 250px;
       width: 100%;
     }
 
@@ -363,6 +443,23 @@
 
     .button:active {
       transform: translateY(0);
+    }
+
+    /* Position quiz buttons at bottom */
+    .quiz-active .button {
+      position: absolute;
+      bottom: var(--spacing-xl);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .quiz-active .button:hover {
+      background-color: var(--color-primary-hover);
+      transform: translateX(-50%) translateY(-1px);
+    }
+
+    .quiz-active .button:active {
+      transform: translateX(-50%) translateY(0);
     }
 
     .start-screen,
@@ -405,7 +502,7 @@
 
     @media (max-width: 600px) {
       body {
-        padding: var(--spacing-md);
+        padding: var(--spacing-sm);
       }
 
       h1 {
@@ -414,26 +511,40 @@
 
       .subtitle {
         font-size: var(--font-size-lg);
+        margin-bottom: var(--spacing-xl);
       }
 
       .code-block {
-        font-size: var(--font-size-lg);
-        padding: var(--spacing-xl);
+        font-size: var(--font-size-base);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .options {
+        gap: var(--spacing-md);
       }
 
       .option {
-        padding: var(--spacing-lg) var(--spacing-xl);
-        font-size: var(--font-size-base);
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-sm);
       }
 
       .option-key {
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
+        font-size: var(--font-size-sm);
       }
 
       .button {
-        font-size: var(--font-size-lg);
-        padding: var(--spacing-lg) var(--spacing-2xl);
+        font-size: var(--font-size-base);
+        padding: var(--spacing-md) var(--spacing-xl);
+        max-width: 200px;
+        bottom: var(--spacing-md);
+      }
+
+      .progress {
+        top: var(--spacing-md);
+        font-size: var(--font-size-sm);
       }
 
       .score {
@@ -442,6 +553,24 @@
 
       .results-screen h2 {
         font-size: 2rem;
+      }
+
+      .question-container {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .explanation {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-md);
+        padding-left: calc(var(--spacing-md) + 32px);
+        min-height: 80px;
+      }
+
+      .explanation-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        left: var(--spacing-md);
       }
     }
 
@@ -539,7 +668,7 @@
 
   <div class="container">
     <header>
-      <h1>new Date("wtf")</h1>
+      <h1 id="main-title">new Date("wtf")</h1>
       <p class="subtitle">A quiz about JavaScript's Date weirdness</p>
     </header>
 
@@ -558,8 +687,8 @@
       <div class="question-container">
         <div class="code-block" id="codeBlock"></div>
         <div id="timezoneNote" class="timezone-note hidden"></div>
-        <div class="options" id="options"></div>
         <div class="explanation" id="explanation"></div>
+        <div class="options" id="options"></div>
       </div>
 
       <button id="nextButton" class="button hidden" onclick="nextQuestion()">Next Question</button>
@@ -579,7 +708,6 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // Theme management
     function getTheme() {
       return localStorage.getItem('theme') || 'dark';
     }
@@ -595,15 +723,17 @@
       setTheme(newTheme);
     }
 
-    // Initialize theme on page load
     document.addEventListener('DOMContentLoaded', () => {
       setTheme(getTheme());
+      // Add syntax highlighting to main title
+      const mainTitle = document.getElementById('main-title');
+      if (mainTitle) {
+        mainTitle.innerHTML = highlightJS('new Date("wtf")');
+      }
     });
 
-    // Also set theme immediately to prevent flash
     setTheme(getTheme());
 
-    // JavaScript syntax highlighter with proper tokenization
     function highlightJS(code) {
       const keywords = new Set([
         'new', 'function', 'var', 'let', 'const', 'if', 'else', 'for', 'while', 'do',
@@ -617,8 +747,6 @@
         '+', '-', '*', '/', '%', '=', '!', '<', '>', '&', '|', '^', '~', '?', ':',
         ';', ',', '.', '(', ')', '[', ']', '{', '}'
       ]);
-
-      // No need to escape HTML since we control all the code content
 
       function tokenize(code) {
         const tokens = [];
@@ -984,6 +1112,7 @@
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('quizScreen').classList.remove('hidden');
       document.getElementById('totalQuestions').textContent = questions.length;
+      document.body.classList.add('quiz-active');
       showQuestion();
     }
 
@@ -1013,7 +1142,11 @@
         optionsContainer.appendChild(optionDiv);
       });
 
-      document.getElementById('explanation').classList.remove('show');
+      const explanation = document.getElementById('explanation');
+      explanation.classList.remove('correct', 'incorrect');
+      explanation.innerHTML = '';
+      explanation.style.opacity = '0';
+      explanation.style.visibility = 'hidden';
       document.getElementById('nextButton').classList.add('hidden');
 
       if (question.timezoneNote) {
@@ -1035,7 +1168,9 @@
 
       options[index].classList.add('selected');
 
-      if (index === question.correct) {
+      const isCorrect = index === question.correct;
+
+      if (isCorrect) {
         options[index].classList.add('correct');
         score++;
       } else {
@@ -1046,8 +1181,15 @@
       options.forEach(option => option.classList.add('disabled'));
 
       const explanation = document.getElementById('explanation');
-      explanation.textContent = question.explanation;
-      explanation.classList.add('show');
+      explanation.innerHTML = `
+        <div class="explanation-icon ${isCorrect ? 'correct' : 'incorrect'}">
+          ${isCorrect ? '✓' : '✗'}
+        </div>
+        ${question.explanation}
+      `;
+      explanation.style.opacity = '1';
+      explanation.style.visibility = 'visible';
+      explanation.classList.add(isCorrect ? 'correct' : 'incorrect');
 
       document.getElementById('nextButton').classList.remove('hidden');
     }
@@ -1114,6 +1256,7 @@
       score = 0;
       document.getElementById('resultsScreen').classList.add('hidden');
       document.getElementById('startScreen').classList.remove('hidden');
+      document.body.classList.remove('quiz-active');
     }
 
     // Keyboard shortcuts
