@@ -6,6 +6,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JS Date WTF - The JavaScript Date Quiz</title>
   <style>
+    :root {
+      /* Colors */
+      --color-primary: #4ade80;
+      --color-primary-hover: #22c55e;
+      --color-secondary: #3b82f6;
+      --color-secondary-hover: #2563eb;
+      --color-bg-dark: #1a1a1a;
+      --color-bg-medium: #2a2a2a;
+      --color-bg-light: #3a3a3a;
+      --color-bg-lighter: #4a4a4a;
+      --color-text-primary: #e0e0e0;
+      --color-text-secondary: #9ca3af;
+      --color-border: #444;
+      --color-border-hover: #666;
+      --color-border-light: #555;
+      --color-error: #ef4444;
+      --color-correct-bg: #2d4a2d;
+      --color-incorrect-bg: #4a2d2d;
+      
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 15px;
+      --spacing-xl: 20px;
+      --spacing-2xl: 25px;
+      --spacing-3xl: 30px;
+      --spacing-4xl: 40px;
+      
+      /* Typography */
+      --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'Courier New', monospace;
+      --font-size-sm: 0.9em;
+      --font-size-base: 1em;
+      --font-size-lg: 1.1em;
+      --font-size-xl: 2em;
+      --font-size-2xl: 2.5em;
+      --font-size-3xl: 3em;
+      --line-height: 1.6;
+      
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      
+      /* Transitions */
+      --transition-fast: 0.2s ease;
+      
+      /* Shadows */
+      --shadow-default: 0 4px 20px rgba(0, 0, 0, 0.3);
+      
+      /* Layout */
+      --container-max-width: 600px;
+      
+      /* Borders */
+      --border-thin: 1px;
+      --border-medium: 2px;
+      --border-thick: 4px;
+      
+      /* Components */
+      --option-key-size: 30px;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,103 +76,103 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #1a1a1a;
-      color: #e0e0e0;
+      font-family: var(--font-system);
+      background-color: var(--color-bg-dark);
+      color: var(--color-text-primary);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
-      line-height: 1.6;
+      padding: var(--spacing-xl);
+      line-height: var(--line-height);
     }
 
     .container {
-      max-width: 600px;
+      max-width: var(--container-max-width);
       width: 100%;
-      background-color: #2a2a2a;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      background-color: var(--color-bg-medium);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-3xl);
+      box-shadow: var(--shadow-default);
     }
 
     header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: var(--spacing-4xl);
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-      color: #4ade80;
-      font-family: 'Courier New', monospace;
+      font-size: var(--font-size-2xl);
+      margin-bottom: calc(var(--spacing-sm) + 2px);
+      color: var(--color-primary);
+      font-family: var(--font-mono);
     }
 
     .subtitle {
-      color: #9ca3af;
-      font-size: 1.1em;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-lg);
     }
 
     .progress {
-      margin-bottom: 30px;
+      margin-bottom: var(--spacing-3xl);
       text-align: center;
-      color: #9ca3af;
+      color: var(--color-text-secondary);
     }
 
     .question-container {
-      margin-bottom: 30px;
+      margin-bottom: var(--spacing-3xl);
     }
 
     .code-block {
-      background-color: #1a1a1a;
-      border: 1px solid #444;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 25px;
-      font-family: 'Courier New', monospace;
-      font-size: 1.1em;
-      color: #4ade80;
+      background-color: var(--color-bg-dark);
+      border: var(--border-thin) solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-2xl);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-lg);
+      color: var(--color-primary);
       overflow-x: auto;
     }
 
     .options {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: var(--spacing-md);
     }
 
     .option {
-      background-color: #3a3a3a;
-      border: 2px solid #444;
-      border-radius: 8px;
-      padding: 15px 20px;
+      background-color: var(--color-bg-light);
+      border: var(--border-medium) solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg) var(--spacing-xl);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition-fast);
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: var(--spacing-lg);
       position: relative;
     }
 
     .option:hover:not(.disabled) {
-      background-color: #4a4a4a;
-      border-color: #666;
+      background-color: var(--color-bg-lighter);
+      border-color: var(--color-border-hover);
       transform: translateY(-1px);
     }
 
     .option.selected {
-      border-color: #4ade80;
-      background-color: #2d4a2d;
+      border-color: var(--color-primary);
+      background-color: var(--color-correct-bg);
     }
 
     .option.correct {
-      border-color: #4ade80;
-      background-color: #2d4a2d;
+      border-color: var(--color-primary);
+      background-color: var(--color-correct-bg);
     }
 
     .option.incorrect {
-      border-color: #ef4444;
-      background-color: #4a2d2d;
+      border-color: var(--color-error);
+      background-color: var(--color-incorrect-bg);
     }
 
     .option.disabled {
@@ -118,11 +181,11 @@
     }
 
     .option-key {
-      background-color: #555;
-      color: #e0e0e0;
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
+      background-color: var(--color-border-light);
+      color: var(--color-text-primary);
+      width: var(--option-key-size);
+      height: var(--option-key-size);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -131,16 +194,16 @@
     }
 
     .option-text {
-      font-family: 'Courier New', monospace;
+      font-family: var(--font-mono);
       flex: 1;
     }
 
     .explanation {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #3a3a3a;
-      border-radius: 8px;
-      border-left: 4px solid #4ade80;
+      margin-top: var(--spacing-xl);
+      padding: var(--spacing-lg);
+      background-color: var(--color-bg-light);
+      border-radius: var(--radius-md);
+      border-left: var(--border-thick) solid var(--color-primary);
       display: none;
     }
 
@@ -149,21 +212,21 @@
     }
 
     .button {
-      background-color: #4ade80;
-      color: #1a1a1a;
+      background-color: var(--color-primary);
+      color: var(--color-bg-dark);
       border: none;
-      border-radius: 8px;
-      padding: 12px 30px;
-      font-size: 1.1em;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md) var(--spacing-3xl);
+      font-size: var(--font-size-lg);
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 20px;
+      transition: all var(--transition-fast);
+      margin-top: var(--spacing-xl);
       width: 100%;
     }
 
     .button:hover {
-      background-color: #22c55e;
+      background-color: var(--color-primary-hover);
       transform: translateY(-1px);
     }
 
@@ -177,24 +240,24 @@
     }
 
     .results-screen h2 {
-      font-size: 2em;
-      margin-bottom: 20px;
-      color: #4ade80;
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--spacing-xl);
+      color: var(--color-primary);
     }
 
     .score {
-      font-size: 3em;
-      margin: 20px 0;
-      color: #4ade80;
+      font-size: var(--font-size-3xl);
+      margin: var(--spacing-xl) 0;
+      color: var(--color-primary);
     }
 
     .share-button {
-      background-color: #3b82f6;
-      margin-top: 20px;
+      background-color: var(--color-secondary);
+      margin-top: var(--spacing-xl);
     }
 
     .share-button:hover {
-      background-color: #2563eb;
+      background-color: var(--color-secondary-hover);
     }
 
     .hidden {
@@ -202,40 +265,40 @@
     }
 
     .timezone-note {
-      font-size: 0.9em;
-      color: #9ca3af;
-      margin-top: 10px;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-top: calc(var(--spacing-sm) + 2px);
       font-style: italic;
     }
 
     @media (max-width: 600px) {
       .container {
-        padding: 20px;
+        padding: var(--spacing-xl);
       }
 
       h1 {
-        font-size: 2em;
+        font-size: var(--font-size-xl);
       }
 
       .code-block {
-        font-size: 1em;
-        padding: 15px;
+        font-size: var(--font-size-base);
+        padding: var(--spacing-lg);
       }
 
       .option {
-        padding: 12px 15px;
+        padding: var(--spacing-md) var(--spacing-lg);
       }
     }
 
     .toast {
       position: fixed;
-      bottom: 20px;
+      bottom: var(--spacing-xl);
       left: 50%;
       transform: translateX(-50%);
-      background-color: #4ade80;
-      color: #1a1a1a;
-      padding: 12px 24px;
-      border-radius: 8px;
+      background-color: var(--color-primary);
+      color: var(--color-bg-dark);
+      padding: var(--spacing-md) calc(var(--spacing-xl) + var(--spacing-xs));
+      border-radius: var(--radius-md);
       font-weight: bold;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -255,7 +318,7 @@
     </header>
 
     <div id="startScreen" class="start-screen">
-      <p style="margin-bottom: 30px;">Think you understand JavaScript's Date constructor? Think again! This quiz
+      <p style="margin-bottom: var(--spacing-3xl);">Think you understand JavaScript's Date constructor? Think again! This quiz
         explores the bizarre and unexpected behaviors of Date parsing.</p>
       <button class="button" onclick="startQuiz()">Start Quiz</button>
     </div>
