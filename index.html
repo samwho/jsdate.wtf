@@ -90,8 +90,6 @@
       --radius-md: 8px;
       --radius-lg: 12px;
 
-      --transition-fast: 0.2s ease;
-
       --shadow-default: 0 4px 20px rgba(0, 0, 0, var(--shadow-strength));
       --shadow-subtle: 0 2px 8px rgba(0, 0, 0, calc(var(--shadow-strength) * 0.6));
 
@@ -149,6 +147,7 @@
       background-color: var(--color-bg-dark);
       color: var(--color-text-primary);
       height: 100vh;
+      /* Fallback for older browsers */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -158,45 +157,107 @@
       overflow: hidden;
     }
 
+    /* Use dynamic viewport height when supported */
+    @supports (height: 100dvh) {
+      body {
+        height: 100dvh;
+      }
+    }
+
     .container {
       max-width: 800px;
       width: 100%;
-      text-align: center;
       height: 100vh;
+      /* Fallback for older browsers */
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: var(--spacing-4xl);
+    /* Screen layouts */
+    #startScreen,
+    #quizScreen,
+    #resultsScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      /* Fallback for older browsers */
+      padding: var(--spacing-xl);
     }
 
-    #quizScreen:not(.hidden)~.container header,
-    #resultsScreen:not(.hidden)~.container header,
-    .quiz-active header {
+    /* Use dynamic viewport height when supported */
+    @supports (height: 100dvh) {
+
+      .container,
+      #startScreen,
+      #quizScreen,
+      #resultsScreen {
+        height: 100dvh;
+      }
+    }
+
+    /* Start screen - center everything vertically */
+    #startScreen {
+      justify-content: center;
+      gap: var(--spacing-2xl);
+    }
+
+    /* Quiz screen - single flexbox with positioned elements */
+    #quizScreen {
+      justify-content: flex-start;
+      gap: var(--spacing-lg);
+    }
+
+    /* Results screen - center everything vertically */
+    #resultsScreen {
+      justify-content: center;
+      gap: var(--spacing-2xl);
+    }
+
+    /* Hide screens by default */
+    #startScreen.hidden,
+    #quizScreen.hidden,
+    #resultsScreen.hidden {
       display: none;
     }
 
-    .quiz-layout {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100vh;
-      padding: var(--spacing-xl) 0;
+    /* Header styling */
+    header {
+      text-align: center;
     }
 
-    .quiz-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    /* Progress stays at top */
+    .progress {
+      align-self: flex-start;
+      width: 100%;
+    }
+
+    /* Options container takes available width */
+    .options {
+      align-self: stretch;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    /* Button stays at bottom with consistent space */
+    #nextButton {
+      align-self: center;
+      visibility: hidden;
+      /* Use visibility instead of display to maintain space */
+    }
+
+    #nextButton:not(.hidden) {
+      visibility: visible;
+    }
+
+    #nextButton.hidden {
+      visibility: hidden;
+      display: block;
     }
 
     h1 {
       font-size: 4rem;
-      margin-bottom: var(--spacing-lg);
       color: var(--color-primary);
       font-family: var(--font-mono);
       font-weight: bold;
@@ -205,7 +266,6 @@
     .subtitle {
       color: var(--color-text-secondary);
       font-size: var(--font-size-xl);
-      margin-bottom: var(--spacing-4xl);
       font-style: italic;
     }
 
@@ -215,7 +275,6 @@
       width: 75%;
       margin: 0 auto;
       font-size: var(--font-size-lg);
-      margin-bottom: var(--spacing-3xl);
       font-style: italic;
       background-color: var(--color-bg-light);
       padding: var(--spacing-lg);
@@ -224,35 +283,28 @@
     }
 
     .progress {
-      margin-bottom: var(--spacing-xl);
       text-align: center;
+      align-content: center;
       color: var(--color-text-secondary);
       font-size: var(--font-size-base);
-      position: absolute;
-      top: var(--spacing-xl);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
+      height: var(--spacing-4xl);
     }
 
-    .question-container {
-      margin-bottom: var(--spacing-xl);
-    }
 
     .code-block {
+      width: 100%;
       background-color: var(--color-code-bg);
       border: var(--border-medium) solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: var(--spacing-xl);
-      margin-bottom: var(--spacing-xl);
       font-family: var(--font-mono);
       font-size: 1.25rem;
       color: var(--color-text-primary);
       overflow-x: auto;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, calc(var(--shadow-strength) * 0.6));
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      text-align: center;
+      text-wrap: nowrap;
     }
 
     .syntax-keyword {
@@ -296,7 +348,6 @@
       border-radius: var(--radius-lg);
       padding: var(--spacing-lg) var(--spacing-xl);
       cursor: pointer;
-      transition: all var(--transition-fast);
       display: flex;
       align-items: center;
       gap: var(--spacing-lg);
@@ -347,28 +398,25 @@
     .option-text {
       font-family: var(--font-mono);
       flex: 1;
+      font-weight: bold;
     }
 
     .explanation {
+      max-width: 600px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: var(--spacing-lg);
-      margin-bottom: var(--spacing-xl);
+      text-align: center;
+      gap: 1rem;
       padding: var(--spacing-lg);
-      padding-left: calc(var(--spacing-lg) + 40px);
       background-color: var(--color-bg-light);
       border-radius: var(--radius-md);
       border-left: var(--border-thick) solid var(--color-accent-green);
-      opacity: 0;
       visibility: hidden;
-      transition: opacity var(--transition-fast), visibility var(--transition-fast);
       font-size: var(--font-size-lg);
-      position: relative;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      min-height: 100px;
+      text-wrap: balance;
+      width: 100%;
+      min-height: 6rem;
     }
 
     .explanation.correct {
@@ -381,31 +429,6 @@
       background-color: var(--color-incorrect-bg);
     }
 
-    .explanation-icon {
-      position: absolute;
-      top: 50%;
-      left: var(--spacing-lg);
-      transform: translateY(-50%);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    .explanation-icon.correct {
-      background-color: var(--color-accent-green);
-      color: white;
-    }
-
-    .explanation-icon.incorrect {
-      background-color: var(--color-error);
-      color: white;
-    }
-
 
     .button {
       background-color: var(--color-primary);
@@ -416,36 +439,14 @@
       font-size: var(--font-size-lg);
       font-weight: bold;
       cursor: pointer;
-      transition: all var(--transition-fast);
-      margin-top: var(--spacing-xl);
       max-width: 250px;
       width: 100%;
     }
 
     .button:hover {
       background-color: var(--color-primary-hover);
-      transform: translateY(-1px);
     }
 
-    .button:active {
-      transform: translateY(0);
-    }
-
-    .quiz-active .button {
-      position: absolute;
-      bottom: var(--spacing-xl);
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .quiz-active .button:hover {
-      background-color: var(--color-primary-hover);
-      transform: translateX(-50%) translateY(-1px);
-    }
-
-    .quiz-active .button:active {
-      transform: translateX(-50%) translateY(0);
-    }
 
     .start-screen,
     .results-screen {
@@ -487,6 +488,13 @@
 
     @media (max-width: 600px) {
       body {
+        padding: var(--spacing-sm);
+      }
+
+      /* Reduce padding on mobile screens to maximize content area */
+      #startScreen,
+      #quizScreen,
+      #resultsScreen {
         padding: var(--spacing-md);
       }
 
@@ -496,18 +504,15 @@
 
       .subtitle {
         font-size: var(--font-size-lg);
-        margin-bottom: var(--spacing-xl);
       }
 
       .subsubtitle {
         font-size: var(--font-size-base);
-        margin-bottom: var(--spacing-lg);
       }
 
       .code-block {
         font-size: var(--font-size-base);
         padding: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
       }
 
       .options {
@@ -527,13 +532,10 @@
 
       .button {
         font-size: var(--font-size-base);
-        padding: var(--spacing-md) var(--spacing-xl);
         max-width: 200px;
-        bottom: var(--spacing-md);
       }
 
       .progress {
-        top: var(--spacing-md);
         font-size: var(--font-size-sm);
       }
 
@@ -543,24 +545,6 @@
 
       .results-screen h2 {
         font-size: 2rem;
-      }
-
-      .question-container {
-        margin-bottom: var(--spacing-md);
-      }
-
-      .explanation {
-        font-size: var(--font-size-base);
-        padding: var(--spacing-md);
-        padding-left: calc(var(--spacing-md) + 32px);
-        min-height: 80px;
-      }
-
-      .explanation-icon {
-        width: 20px;
-        height: 20px;
-        font-size: 14px;
-        left: var(--spacing-md);
       }
     }
 
@@ -575,7 +559,6 @@
       border-radius: var(--radius-md);
       font-weight: bold;
       opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
     .toast.show {
@@ -591,7 +574,6 @@
       border-radius: var(--radius-md);
       padding: var(--spacing-sm) var(--spacing-md);
       cursor: pointer;
-      transition: all var(--transition-fast);
       z-index: 1000;
       display: flex;
       align-items: center;
@@ -655,12 +637,12 @@
   </button>
 
   <div class="container">
-    <header>
-      <h1 id="main-title">new Date("wtf")</h1>
-      <p class="subtitle">A quiz about the most bizarre date parser I've ever seen</p>
-    </header>
-
     <div id="startScreen" class="start-screen">
+      <header>
+        <h1 id="main-title">new Date("wtf")</h1>
+        <p class="subtitle">A quiz about the most bizarre date parser I've ever seen</p>
+      </header>
+
       <p class="subsubtitle">
         All questions verified using NodeJS 24.4.0 on
         a MacBook Pro set to the BST timezone (UTC+1).
@@ -673,12 +655,11 @@
         Question <span id="currentQuestion">1</span> of <span id="totalQuestions">20</span>
       </div>
 
-      <div class="question-container">
-        <div class="code-block" id="codeBlock"></div>
-        <div id="timezoneNote" class="timezone-note hidden"></div>
-        <div class="explanation" id="explanation"></div>
-        <div class="options" id="options"></div>
-      </div>
+      <div class="code-block" id="codeBlock"></div>
+      <div id="timezoneNote" class="timezone-note hidden"></div>
+      <div class="explanation" id="explanation"></div>
+
+      <div class="options" id="options"></div>
 
       <button id="nextButton" class="button hidden" onclick="nextQuestion()">Next Question</button>
     </div>
@@ -712,11 +693,63 @@
       setTheme(newTheme);
     }
 
+    // URL-based progress tracking
+    function updateURL() {
+      const params = new URLSearchParams();
+      if (currentQuestionIndex > 0) {
+        params.set('q', currentQuestionIndex.toString());
+      }
+      if (score > 0) {
+        params.set('s', score.toString());
+      }
+      if (chosenAnswer !== null) {
+        params.set('a', chosenAnswer.toString());
+      }
+      const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      window.history.replaceState({}, '', newURL);
+    }
+
+    function loadFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const questionParam = params.get('q');
+      const scoreParam = params.get('s');
+      const answerParam = params.get('a');
+
+      if (questionParam) {
+        const questionIndex = parseInt(questionParam);
+        if (questionIndex >= 0 && questionIndex < questions.length) {
+          currentQuestionIndex = questionIndex;
+          score = parseInt(scoreParam) || 0;
+          const savedAnswer = answerParam !== null ? parseInt(answerParam) : null;
+
+          // Set chosenAnswer before calling startQuiz
+          chosenAnswer = savedAnswer;
+
+          startQuiz(true);
+
+          // If there's a chosen answer, simulate the answer selection
+          if (savedAnswer !== null && savedAnswer >= 0 && savedAnswer <= 3) {
+            setTimeout(() => {
+              selectOption(savedAnswer);
+            }, 100); // Small delay to ensure DOM is ready
+          }
+          return true;
+        }
+      }
+      return false;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setTheme(getTheme());
       const mainTitle = document.getElementById('main-title');
       if (mainTitle) {
         mainTitle.innerHTML = highlightJS('new Date("wtf")');
+      }
+
+      // Load progress from URL if available
+      if (!loadFromURL()) {
+        // Show start screen if no URL params
+        document.getElementById('startScreen').classList.remove('hidden');
       }
     });
 
@@ -1085,16 +1118,19 @@
     let currentQuestionIndex = 0;
     let score = 0;
     let answered = false;
+    let chosenAnswer = null;
 
-    function startQuiz() {
+    function startQuiz(skipURLUpdate = false) {
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('quizScreen').classList.remove('hidden');
       document.getElementById('totalQuestions').textContent = questions.length;
-      document.body.classList.add('quiz-active');
-      showQuestion();
+      showQuestion(skipURLUpdate); // Preserve answer if we're skipping URL update
+      if (!skipURLUpdate) {
+        updateURL();
+      }
     }
 
-    function showQuestion() {
+    function showQuestion(preserveAnswer = false) {
       const question = questions[currentQuestionIndex];
       document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
       document.getElementById('codeBlock').innerHTML = question.highlightedCode;
@@ -1122,8 +1158,6 @@
 
       const explanation = document.getElementById('explanation');
       explanation.classList.remove('correct', 'incorrect');
-      explanation.innerHTML = '';
-      explanation.style.opacity = '0';
       explanation.style.visibility = 'hidden';
       document.getElementById('nextButton').classList.add('hidden');
 
@@ -1135,12 +1169,16 @@
       }
 
       answered = false;
+      if (!preserveAnswer) {
+        chosenAnswer = null;
+      }
     }
 
     function selectOption(index) {
       if (answered) return;
 
       answered = true;
+      chosenAnswer = index;
       const question = questions[currentQuestionIndex];
       const options = document.querySelectorAll('.option');
 
@@ -1159,23 +1197,19 @@
       options.forEach(option => option.classList.add('disabled'));
 
       const explanation = document.getElementById('explanation');
-      explanation.innerHTML = `
-        <div class="explanation-icon ${isCorrect ? 'correct' : 'incorrect'}">
-          ${isCorrect ? '✓' : '✗'}
-        </div>
-        ${question.explanation}
-      `;
-      explanation.style.opacity = '1';
+      explanation.innerHTML = question.explanation;
       explanation.style.visibility = 'visible';
       explanation.classList.add(isCorrect ? 'correct' : 'incorrect');
 
       document.getElementById('nextButton').classList.remove('hidden');
+      updateURL();
     }
 
     function nextQuestion() {
       currentQuestionIndex++;
       if (currentQuestionIndex < questions.length) {
         showQuestion();
+        updateURL();
       } else {
         showResults();
       }
@@ -1203,6 +1237,8 @@
       }
 
       document.getElementById('resultMessage').textContent = message;
+      // Clear URL parameters when quiz is complete
+      window.history.replaceState({}, '', window.location.pathname);
     }
 
     function shareResults() {
@@ -1232,9 +1268,11 @@
     function restartQuiz() {
       currentQuestionIndex = 0;
       score = 0;
+      chosenAnswer = null;
       document.getElementById('resultsScreen').classList.add('hidden');
       document.getElementById('startScreen').classList.remove('hidden');
-      document.body.classList.remove('quiz-active');
+      // Clear URL parameters
+      window.history.replaceState({}, '', window.location.pathname);
     }
 
     document.addEventListener('keydown', (e) => {
