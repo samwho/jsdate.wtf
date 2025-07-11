@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Date WTF - The JavaScript Date Quiz</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #1a1a1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #4ade80;
+      font-family: 'Courier New', monospace;
+    }
+
+    .subtitle {
+      color: #9ca3af;
+      font-size: 1.1em;
+    }
+
+    .progress {
+      margin-bottom: 30px;
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    .question-container {
+      margin-bottom: 30px;
+    }
+
+    .code-block {
+      background-color: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1em;
+      color: #4ade80;
+      overflow-x: auto;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option {
+      background-color: #3a3a3a;
+      border: 2px solid #444;
+      border-radius: 8px;
+      padding: 15px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+
+    .option:hover:not(.disabled) {
+      background-color: #4a4a4a;
+      border-color: #666;
+      transform: translateY(-1px);
+    }
+
+    .option.selected {
+      border-color: #4ade80;
+      background-color: #2d4a2d;
+    }
+
+    .option.correct {
+      border-color: #4ade80;
+      background-color: #2d4a2d;
+    }
+
+    .option.incorrect {
+      border-color: #ef4444;
+      background-color: #4a2d2d;
+    }
+
+    .option.disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .option-key {
+      background-color: #555;
+      color: #e0e0e0;
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      font-family: 'Courier New', monospace;
+      flex: 1;
+    }
+
+    .explanation {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #3a3a3a;
+      border-radius: 8px;
+      border-left: 4px solid #4ade80;
+      display: none;
+    }
+
+    .explanation.show {
+      display: block;
+    }
+
+    .button {
+      background-color: #4ade80;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 30px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .button:hover {
+      background-color: #22c55e;
+      transform: translateY(-1px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .start-screen,
+    .results-screen {
+      text-align: center;
+    }
+
+    .results-screen h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #4ade80;
+    }
+
+    .score {
+      font-size: 3em;
+      margin: 20px 0;
+      color: #4ade80;
+    }
+
+    .share-button {
+      background-color: #3b82f6;
+      margin-top: 20px;
+    }
+
+    .share-button:hover {
+      background-color: #2563eb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .timezone-note {
+      font-size: 0.9em;
+      color: #9ca3af;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      .code-block {
+        font-size: 1em;
+        padding: 15px;
+      }
+
+      .option {
+        padding: 12px 15px;
+      }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4ade80;
+      color: #1a1a1a;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>new Date("wtf")</h1>
+      <p class="subtitle">A quiz about JavaScript's Date weirdness</p>
+    </header>
+
+    <div id="startScreen" class="start-screen">
+      <p style="margin-bottom: 30px;">Think you understand JavaScript's Date constructor? Think again! This quiz
+        explores the bizarre and unexpected behaviors of Date parsing.</p>
+      <button class="button" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quizScreen" class="hidden">
+      <div class="progress">
+        Question <span id="currentQuestion">1</span> of <span id="totalQuestions">20</span>
+      </div>
+
+      <div class="question-container">
+        <div class="code-block" id="codeBlock"></div>
+        <div id="timezoneNote" class="timezone-note hidden"></div>
+        <div class="options" id="options"></div>
+        <div class="explanation" id="explanation"></div>
+      </div>
+
+      <button id="nextButton" class="button hidden" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div id="resultsScreen" class="results-screen hidden">
+      <h2>Quiz Complete!</h2>
+      <div class="score">
+        <span id="correctCount">0</span> / <span id="totalCount">0</span>
+      </div>
+      <p id="resultMessage"></p>
+      <button class="button share-button" onclick="shareResults()">Share Results</button>
+      <button class="button" onclick="restartQuiz()">Try Again</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const questions = [
+      // Basic number/string confusion
+      {
+        code: 'new Date("0")',
+        options: [
+          '1970-01-01T00:00:00.000Z',
+          '2000-01-01T00:00:00.000Z',
+          'Invalid Date',
+          'Throws an error'
+        ],
+        correct: 1,
+        explanation: 'The string "0" is interpreted as the year 2000, not as a timestamp!'
+      },
+      {
+        code: 'new Date(0)',
+        options: [
+          '1970-01-01T00:00:00.000Z',
+          '2000-01-01T00:00:00.000Z',
+          'Invalid Date',
+          'Throws an error'
+        ],
+        correct: 0,
+        explanation: 'The number 0 is interpreted as milliseconds since the Unix epoch (Jan 1, 1970).'
+      },
+      {
+        code: 'Date.parse(0) === Date.parse("0")',
+        options: [
+          'true',
+          'false',
+          'Throws an error',
+          'undefined'
+        ],
+        correct: 0,
+        explanation: 'Both parse to 946684800000 milliseconds! The number 0 is coerced to the string "0".'
+      },
+
+      // Invalid dates that are still Date objects
+      {
+        code: 'new Date("not a date")',
+        options: [
+          'null',
+          'undefined',
+          'Invalid Date',
+          'Throws an error'
+        ],
+        correct: 2,
+        explanation: 'Invalid Date is still a Date object! It\'s not null or an error.'
+      },
+      {
+        code: 'new Date("not a date").getTime()',
+        options: [
+          '0',
+          'NaN',
+          'null',
+          'Throws an error'
+        ],
+        correct: 1,
+        explanation: 'Invalid Date objects return NaN for getTime().'
+      },
+      {
+        code: 'new Date("not a date").toISOString()',
+        options: [
+          '"Invalid Date"',
+          'null',
+          'NaN',
+          'Throws a RangeError'
+        ],
+        correct: 3,
+        explanation: 'toISOString() throws a RangeError on Invalid Date objects.'
+      },
+      {
+        code: 'new Date("not a date").toTimeString()',
+        options: [
+          '"Invalid Date"',
+          '""',
+          'null',
+          'Throws an error'
+        ],
+        correct: 0,
+        explanation: 'toTimeString() returns the string "Invalid Date" for invalid dates.'
+      },
+
+      // Single/double digit parsing
+      {
+        code: 'new Date("1")',
+        options: [
+          '1970-01-01T00:00:01.000Z',
+          '2001-01-01T00:00:00.000Z',
+          '0001-01-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 1,
+        explanation: 'Single digit "1" is interpreted as year 2001, not as 1 millisecond or year 1!'
+      },
+      {
+        code: 'new Date("2")',
+        options: [
+          '2002-01-01T00:00:00.000Z',
+          '2001-01-02T00:00:00.000Z',
+          '2001-02-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 2,
+        explanation: '"2" after "1" adds a month, not a year! So it\'s February 2001.'
+      },
+      {
+        code: 'new Date("99") > new Date("100")',
+        options: [
+          'true',
+          'false',
+          'Throws an error',
+          'Both are Invalid Date'
+        ],
+        correct: 0,
+        explanation: '"99" is year 1999, while "100" is year 0100. 1999 > 0100!'
+      },
+      {
+        code: 'new Date("13")',
+        options: [
+          '2013-01-01T00:00:00.000Z',
+          '2001-01-13T00:00:00.000Z',
+          '2001-13-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 3,
+        explanation: '"13" would be month 13, which doesn\'t exist, so it\'s Invalid Date.'
+      },
+      {
+        code: 'new Date("12")',
+        options: [
+          '2012-01-01T00:00:00.000Z',
+          '2001-01-12T00:00:00.000Z',
+          '2001-12-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 2,
+        explanation: '"12" is interpreted as December 2001 (month 12).'
+      },
+
+      // Decimal weirdness
+      {
+        code: 'new Date("12.0")',
+        options: [
+          '2012-01-01T00:00:00.000Z',
+          '2001-12-01T00:00:00.000Z',
+          '2001-01-12T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 3,
+        explanation: 'Adding ".0" makes it invalid, even though 12.0 === 12 in JavaScript!'
+      },
+      {
+        code: 'new Date("12.1")',
+        options: [
+          '2001-12-01T00:00:00.100Z',
+          '2001-01-01T00:00:00.000Z',
+          '2012-01-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 1,
+        explanation: '"12.1" is somehow valid and gives January 2001. The parser gives up on the decimal.'
+      },
+
+      // Text prefix parsing
+      {
+        code: 'new Date("perhaps 1")',
+        options: [
+          'Invalid Date',
+          '2001-01-01T00:00:00.000Z',
+          '1970-01-01T00:00:01.000Z',
+          'Throws an error'
+        ],
+        correct: 1,
+        explanation: 'Leading text is ignored! It finds the "1" and parses it as year 2001.'
+      },
+      {
+        code: 'new Date("maybe 1")',
+        options: [
+          '2001-01-01T00:00:00.000Z',
+          '2001-04-30T23:00:00.000Z',
+          '2001-05-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 1,
+        explanation: '"may" in "maybe" is parsed as the month May! Then "be 1" becomes day 1.',
+        timezoneNote: 'Note: The exact time may vary based on your timezone.'
+      },
+      {
+        code: 'new Date("fourth of may 2010")',
+        options: [
+          'Invalid Date',
+          '2010-05-04T00:00:00.000Z',
+          '2010-04-30T23:00:00.000Z',
+          '2010-05-01T00:00:00.000Z'
+        ],
+        correct: 2,
+        explanation: 'It parses "fourth" as 4, finds "may" as the month, and 2010 as the year.',
+        timezoneNote: 'Note: The exact time may vary based on your timezone.'
+      },
+
+      // Parentheses magic
+      {
+        code: 'new Date("1990 2010")',
+        options: [
+          '1990-01-01T00:00:00.000Z',
+          '2010-01-01T00:00:00.000Z',
+          '2000-01-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 3,
+        explanation: 'Two years without parentheses confuses the parser - Invalid Date.'
+      },
+      {
+        code: 'new Date("1990 (2010)")',
+        options: [
+          '1990-01-01T00:00:00.000Z',
+          '2010-01-01T00:00:00.000Z',
+          '2000-01-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 0,
+        explanation: 'Parentheses make the parser ignore what\'s inside! Uses 1990.'
+      },
+      {
+        code: 'new Date("(1990) 2010")',
+        options: [
+          '1990-01-01T00:00:00.000Z',
+          '2010-01-01T00:00:00.000Z',
+          '2000-01-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 1,
+        explanation: 'With the first year in parentheses, it\'s ignored and 2010 is used!'
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz() {
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('quizScreen').classList.remove('hidden');
+      document.getElementById('totalQuestions').textContent = questions.length;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const question = questions[currentQuestionIndex];
+      document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+      document.getElementById('codeBlock').textContent = question.code;
+
+      const optionsContainer = document.getElementById('options');
+      optionsContainer.innerHTML = '';
+
+      question.options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'option';
+        optionDiv.onclick = () => selectOption(index);
+
+        const keyDiv = document.createElement('div');
+        keyDiv.className = 'option-key';
+        keyDiv.textContent = (index + 1).toString();
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'option-text';
+        textDiv.textContent = option;
+
+        optionDiv.appendChild(keyDiv);
+        optionDiv.appendChild(textDiv);
+        optionsContainer.appendChild(optionDiv);
+      });
+
+      document.getElementById('explanation').classList.remove('show');
+      document.getElementById('nextButton').classList.add('hidden');
+
+      if (question.timezoneNote) {
+        document.getElementById('timezoneNote').textContent = question.timezoneNote;
+        document.getElementById('timezoneNote').classList.remove('hidden');
+      } else {
+        document.getElementById('timezoneNote').classList.add('hidden');
+      }
+
+      answered = false;
+    }
+
+    function selectOption(index) {
+      if (answered) return;
+
+      answered = true;
+      const question = questions[currentQuestionIndex];
+      const options = document.querySelectorAll('.option');
+
+      options[index].classList.add('selected');
+
+      if (index === question.correct) {
+        options[index].classList.add('correct');
+        score++;
+      } else {
+        options[index].classList.add('incorrect');
+        options[question.correct].classList.add('correct');
+      }
+
+      options.forEach(option => option.classList.add('disabled'));
+
+      const explanation = document.getElementById('explanation');
+      explanation.textContent = question.explanation;
+      explanation.classList.add('show');
+
+      document.getElementById('nextButton').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quizScreen').classList.add('hidden');
+      document.getElementById('resultsScreen').classList.remove('hidden');
+      document.getElementById('correctCount').textContent = score;
+      document.getElementById('totalCount').textContent = questions.length;
+
+      const percentage = Math.round((score / questions.length) * 100);
+      let message = '';
+
+      if (percentage === 100) {
+        message = 'Perfect! You truly understand the madness of JavaScript dates!';
+      } else if (percentage >= 80) {
+        message = 'Excellent! You know your way around Date weirdness.';
+      } else if (percentage >= 60) {
+        message = 'Good job! JavaScript dates are tricky.';
+      } else if (percentage >= 40) {
+        message = 'Not bad! Date parsing is genuinely confusing.';
+      } else {
+        message = 'JavaScript dates are weird, aren\'t they?';
+      }
+
+      document.getElementById('resultMessage').textContent = message;
+    }
+
+    function shareResults() {
+      const score = document.getElementById('correctCount').textContent;
+      const total = document.getElementById('totalCount').textContent;
+      const text = `I scored ${score}/${total} on the JavaScript Date WTF Quiz! 🗓️\n\nThink you know JS dates? Try it at jsdate.wtf`;
+
+      if (navigator.share) {
+        navigator.share({
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text);
+        showToast('Results copied to clipboard!');
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById('resultsScreen').classList.add('hidden');
+      document.getElementById('startScreen').classList.remove('hidden');
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('quizScreen').classList.contains('hidden')) return;
+
+      if (e.key >= '1' && e.key <= '4' && !answered) {
+        selectOption(parseInt(e.key) - 1);
+      } else if ((e.key === 'Enter' || e.key === ' ') && answered) {
+        e.preventDefault();
+        nextQuestion();
+      }
+    });
+  </script>
+</body>
+
+</html>
