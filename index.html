@@ -827,57 +827,6 @@
       setTheme(newTheme);
     }
 
-    function updateURL() {
-      const params = new URLSearchParams();
-      if (currentQuestionIndex > 0) {
-        params.set('q', currentQuestionIndex.toString());
-      }
-      if (score > 0) {
-        params.set('s', score.toString());
-      }
-      if (chosenAnswer !== null) {
-        params.set('a', chosenAnswer.toString());
-      }
-      const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
-      window.history.replaceState({}, '', newURL);
-    }
-
-    function loadFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      const questionParam = params.get('q');
-      const scoreParam = params.get('s');
-      const answerParam = params.get('a');
-      const resultsParam = params.get('results');
-
-      if (resultsParam === 'true') {
-        score = parseInt(scoreParam) || 15;
-        document.getElementById('startScreen').classList.add('hidden');
-        document.getElementById('resultsScreen').classList.remove('hidden');
-        showResults();
-        return true;
-      }
-
-      if (questionParam) {
-        const questionIndex = parseInt(questionParam);
-        if (questionIndex >= 0 && questionIndex < questions.length) {
-          currentQuestionIndex = questionIndex;
-          score = parseInt(scoreParam) || 0;
-          const savedAnswer = answerParam !== null ? parseInt(answerParam) : null;
-
-          chosenAnswer = savedAnswer;
-
-          startQuiz(true);
-
-          if (savedAnswer !== null && savedAnswer >= 0 && savedAnswer <= 3) {
-            setTimeout(() => {
-              selectOption(savedAnswer);
-            }, 100);
-          }
-          return true;
-        }
-      }
-      return false;
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
       setTheme(getTheme());
@@ -895,9 +844,7 @@
         });
       }
 
-      if (!loadFromURL()) {
-        document.getElementById('startScreen').classList.remove('hidden');
-      }
+      document.getElementById('startScreen').classList.remove('hidden');
     });
 
     setTheme(getTheme());
@@ -1059,7 +1006,7 @@
           'undefined'
         ],
         correct: 0,
-        explanation: 'Both parse to 946684800000 milliseconds! The number 0 is coerced to the string "0".'
+        explanation: 'Both parse to 946684800000 milliseconds! Date.parse only operates on strings, so 0 is coerced to the string "0".'
       },
 
       {
@@ -1082,7 +1029,7 @@
           'Throws an error'
         ],
         correct: 1,
-        explanation: 'Invalid Date objects return NaN for getTime().'
+        explanation: 'Invalid Date objects return NaN for getTime(). This function returns the number of milliseconds since the Unix epoch for valid dates.'
       },
       {
         code: 'new Date("not a date").toISOString()',
@@ -1104,7 +1051,7 @@
           'Throws an error'
         ],
         correct: 0,
-        explanation: 'toTimeString() returns the string "Invalid Date" for invalid dates.'
+        explanation: 'toTimeString() returns the string "Invalid Date" for invalid dates. 🫠'
       },
 
       {
@@ -1116,7 +1063,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'Just like "0", "1" is interpreted as a year, starting at 2000.'
+        explanation: 'Just like "0", "1" is interpreted as a year, so this is 2000+1.'
       },
       {
         code: 'new Date("2")',
@@ -1130,17 +1077,6 @@
         explanation: 'Except for some reason "2" is interpreted as a month, and the year is set to 2001.'
       },
       {
-        code: 'new Date("99") > new Date("100")',
-        options: [
-          'true',
-          'false',
-          'Throws an error',
-          'NaN'
-        ],
-        correct: 0,
-        explanation: '"99" is year 1999, while "100" is year 0100. 1999 > 0100!'
-      },
-      {
         code: 'new Date("12")',
         options: [
           '2012-01-01T00:00:00.000Z',
@@ -1149,7 +1085,7 @@
           'Invalid Date'
         ],
         correct: 2,
-        explanation: '"12" is interpreted as December 2001 (month 12).'
+        explanation: '"12" is interpreted as December 2001 (month 12), as you might expect from the previous question.'
       },
       {
         code: 'new Date("13")',
@@ -1163,15 +1099,37 @@
         explanation: '"13" would be month 13, which doesn\'t exist, so it\'s Invalid Date.'
       },
       {
+        code: 'new Date("99") > new Date("100")',
+        options: [
+          'true',
+          'false',
+          'Throws an error',
+          'NaN'
+        ],
+        correct: 0,
+        explanation: '"99" is year 1999, while "100" is year 0100. 1999 > 0100! Date starts interpreting numbers as years starting at "32".'
+      },
+      {
+        code: 'new Date("49") > new Date("50")',
+        options: [
+          'true',
+          'false',
+          'Throws an error',
+          'NaN'
+        ],
+        correct: 0,
+        explanation: 'And for some reason "32" to "49" is 2032-2049, while "50" onwards is 1950+. So 2032 > 1950!'
+      },
+      {
         code: 'new Date("12.1")',
         options: [
-          '2001-12-01T00:00:00.100Z',
+          '2001-12-01T00:00:00.000Z',
           '2001-01-01T00:00:00.000Z',
           '2012-01-01T00:00:00.000Z',
           'Invalid Date'
         ],
         correct: 0,
-        explanation: '"12.1" is interpreted as the date December 1st, and as before the default year is 2001 because of course.'
+        explanation: '"12.1" is interpreted as the date December 1st, and as before with dates without a year the default year is 2001 because of course.'
       },
       {
         code: 'new Date("12.0")',
@@ -1183,6 +1141,17 @@
         ],
         correct: 3,
         explanation: 'The .0 is still interpreted as a day, and no month has a 0th day, so this is considered invalid.'
+      },
+      {
+        code: 'new Date("12.-1")',
+        options: [
+          '2001-12-01T00:00:00.000Z',
+          '2001-01-01T00:00:00.000Z',
+          '2012-01-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 0,
+        explanation: 'The dash here is ignored, so this is interpreted the same as "12.1".'
       },
 
       {
@@ -1353,17 +1322,14 @@
     let answered = false;
     let chosenAnswer = null;
 
-    function startQuiz(skipURLUpdate = false) {
+    function startQuiz() {
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('quizScreen').classList.remove('hidden');
       document.getElementById('totalQuestions').textContent = questions.length;
-      showQuestion(skipURLUpdate);
-      if (!skipURLUpdate) {
-        updateURL();
-      }
+      showQuestion();
     }
 
-    function showQuestion(preserveAnswer = false) {
+    function showQuestion() {
       const question = questions[currentQuestionIndex];
       document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
       document.getElementById('codeBlock').innerHTML = question.highlightedCode;
@@ -1395,9 +1361,7 @@
       document.getElementById('nextButton').classList.add('hidden');
 
       answered = false;
-      if (!preserveAnswer) {
-        chosenAnswer = null;
-      }
+      chosenAnswer = null;
     }
 
     function selectOption(index) {
@@ -1428,14 +1392,12 @@
       explanation.classList.add(isCorrect ? 'correct' : 'incorrect');
 
       document.getElementById('nextButton').classList.remove('hidden');
-      updateURL();
     }
 
     function nextQuestion() {
       currentQuestionIndex++;
       if (currentQuestionIndex < questions.length) {
         showQuestion();
-        updateURL();
       } else {
         showResults();
       }
