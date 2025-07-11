@@ -199,8 +199,16 @@
 
     /* Start screen - center everything vertically */
     #startScreen {
-      justify-content: center;
+      justify-content: space-between;
+    }
+
+    .start-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: var(--spacing-2xl);
+      flex: 1;
+      justify-content: center;
     }
 
     /* Quiz screen - single flexbox with positioned elements */
@@ -402,12 +410,11 @@
     }
 
     .explanation {
-      max-width: 600px;
       display: flex;
       align-items: center;
       justify-content: center;
+      max-width: 600px;
       text-align: center;
-      gap: 1rem;
       padding: var(--spacing-lg);
       background-color: var(--color-bg-light);
       border-radius: var(--radius-md);
@@ -466,13 +473,111 @@
       font-weight: bold;
     }
 
+    .share-box {
+      position: relative;
+      background-color: var(--color-bg-light);
+      border: var(--border-medium) solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      padding-right: calc(var(--spacing-lg) + 32px);
+      /* Extra space for copy button */
+      margin-top: var(--spacing-xl);
+      max-width: 500px;
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .copy-button {
+      position: absolute;
+      top: var(--spacing-sm);
+      right: var(--spacing-sm);
+      background-color: var(--color-bg-lighter);
+      border: var(--border-thin) solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--spacing-xs);
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .copy-button:hover {
+      background-color: var(--color-border);
+    }
+
+    .copy-icon {
+      width: 14px;
+      height: 14px;
+      stroke: var(--color-text-secondary);
+    }
+
+    .button-row {
+      display: flex;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .icon-button {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-lg);
+      font-size: var(--font-size-base);
+      min-width: 100px;
+      justify-content: center;
+    }
+
+    .button-icon {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+    }
+
     .share-button {
       background-color: var(--color-secondary);
-      margin-top: var(--spacing-xl);
     }
 
     .share-button:hover {
       background-color: var(--color-secondary-hover);
+    }
+
+    .copy-button-main {
+      background-color: var(--color-bg-lighter);
+      color: var(--color-text-primary);
+      border: var(--border-medium) solid var(--color-border);
+    }
+
+    .copy-button-main:hover {
+      background-color: var(--color-border);
+    }
+
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-top: auto;
+      padding-bottom: var(--spacing-md);
+    }
+
+    .footer a {
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer a:hover {
+      color: var(--color-primary-hover);
     }
 
     .hidden {
@@ -638,16 +743,24 @@
 
   <div class="container">
     <div id="startScreen" class="start-screen">
-      <header>
-        <h1 id="main-title">new Date("wtf")</h1>
-        <p class="subtitle">A quiz about the most bizarre date parser I've ever seen</p>
-      </header>
+      <div class="start-content">
+        <header>
+          <h1 id="main-title">new Date("wtf")</h1>
+          <p class="subtitle">How well do you know JavaScript's Date class?</p>
+        </header>
 
-      <p class="subsubtitle">
-        All questions verified using NodeJS 24.4.0 on
-        a MacBook Pro set to the BST timezone (UTC+1).
-      </p>
-      <button class="button" onclick="startQuiz()">Start Quiz</button>
+        <p class="subsubtitle">
+          All questions verified using NodeJS 24.4.0 on
+          a MacBook Pro set to the BST timezone (UTC+1).
+        </p>
+        <button class="button" onclick="startQuiz()">Start Quiz</button>
+      </div>
+
+      <div class="footer">
+        <p>
+          made with ❤️ by <a href="https://samwho.dev" target="_blank" rel="noopener">samwho</a>
+        </p>
+      </div>
     </div>
 
     <div id="quizScreen" class="hidden">
@@ -656,7 +769,6 @@
       </div>
 
       <div class="code-block" id="codeBlock"></div>
-      <div id="timezoneNote" class="timezone-note hidden"></div>
       <div class="explanation" id="explanation"></div>
 
       <div class="options" id="options"></div>
@@ -665,13 +777,44 @@
     </div>
 
     <div id="resultsScreen" class="results-screen hidden">
-      <h2>Quiz Complete!</h2>
+      <h2>You got to the end!</h2>
       <div class="score">
         <span id="correctCount">0</span> / <span id="totalCount">0</span>
       </div>
       <p id="resultMessage"></p>
-      <button class="button share-button" onclick="shareResults()">Share Results</button>
-      <button class="button" onclick="restartQuiz()">Try Again</button>
+
+      <div class="share-box">
+        <button class="copy-button" onclick="copyShareMessage()" title="Copy to clipboard">
+          <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+        <div id="shareMessage"></div>
+      </div>
+
+      <div class="button-row">
+        <button class="button icon-button share-button" onclick="shareResults()">
+          <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+            <polyline points="16,6 12,2 8,6"></polyline>
+            <line x1="12" y1="2" x2="12" y2="15"></line>
+          </svg>
+          Share
+        </button>
+        <button class="button icon-button copy-button-main" onclick="copyShareMessage()">
+          <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy
+        </button>
+      </div>
+      <div class="footer">
+        <p>
+          made with ❤️ by <a href="https://samwho.dev" target="_blank" rel="noopener">samwho</a>
+        </p>
+      </div>
     </div>
   </div>
 
@@ -679,7 +822,19 @@
 
   <script>
     function getTheme() {
-      return localStorage.getItem('theme') || 'dark';
+      // Check localStorage first, then fall back to system preference
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        return savedTheme;
+      }
+
+      // Detect system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
+
+      // Default to dark if no preference detected
+      return 'dark';
     }
 
     function setTheme(theme) {
@@ -714,6 +869,16 @@
       const questionParam = params.get('q');
       const scoreParam = params.get('s');
       const answerParam = params.get('a');
+      const resultsParam = params.get('results');
+
+      // Check for results screen
+      if (resultsParam === 'true') {
+        score = parseInt(scoreParam) || 15; // Default to a sample score
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('resultsScreen').classList.remove('hidden');
+        showResults();
+        return true;
+      }
 
       if (questionParam) {
         const questionIndex = parseInt(questionParam);
@@ -744,6 +909,17 @@
       const mainTitle = document.getElementById('main-title');
       if (mainTitle) {
         mainTitle.innerHTML = highlightJS('new Date("wtf")');
+      }
+
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+        mediaQuery.addEventListener('change', (e) => {
+          // Only update if user hasn't manually set a preference
+          if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'light' : 'dark');
+          }
+        });
       }
 
       // Load progress from URL if available
@@ -901,7 +1077,7 @@
           'Throws an error'
         ],
         correct: 0,
-        explanation: 'The number 0 is interpreted as milliseconds since the Unix epoch (Jan 1, 1970).'
+        explanation: 'The <i>number</i> 0, as opposed to the string "0", is interpreted as milliseconds since the Unix epoch (Jan 1, 1970).'
       },
       {
         code: 'Date.parse(0) === Date.parse("0")',
@@ -969,7 +1145,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'Just like "0", "1" is interpreted as year 2001, not as a timestamp!'
+        explanation: 'Just like "0", "1" is interpreted as a year, starting at 2000.'
       },
       {
         code: 'new Date("2")',
@@ -980,7 +1156,7 @@
           'Invalid Date'
         ],
         correct: 2,
-        explanation: 'For reasons not obvious to me, "2" is interpreted as February 2001 (month 2).'
+        explanation: 'Except for some reason "2" is interpreted as a month, and the year is set to 2001.'
       },
       {
         code: 'new Date("99") > new Date("100")',
@@ -988,10 +1164,21 @@
           'true',
           'false',
           'Throws an error',
-          'Both are Invalid Date'
+          'NaN'
         ],
         correct: 0,
         explanation: '"99" is year 1999, while "100" is year 0100. 1999 > 0100!'
+      },
+      {
+        code: 'new Date("12")',
+        options: [
+          '2012-01-01T00:00:00.000Z',
+          '2001-01-12T00:00:00.000Z',
+          '2001-12-01T00:00:00.000Z',
+          'Invalid Date'
+        ],
+        correct: 2,
+        explanation: '"12" is interpreted as December 2001 (month 12).'
       },
       {
         code: 'new Date("13")',
@@ -1005,17 +1192,16 @@
         explanation: '"13" would be month 13, which doesn\'t exist, so it\'s Invalid Date.'
       },
       {
-        code: 'new Date("12")',
+        code: 'new Date("12.1")',
         options: [
+          '2001-12-01T00:00:00.100Z',
+          '2001-01-01T00:00:00.000Z',
           '2012-01-01T00:00:00.000Z',
-          '2001-01-12T00:00:00.000Z',
-          '2001-12-01T00:00:00.000Z',
           'Invalid Date'
         ],
-        correct: 2,
-        explanation: '"12" is interpreted as December 2001 (month 12).'
+        correct: 0,
+        explanation: '"12.1" is interpreted as the date December 1st, and as before the default year is 2001 because of course.'
       },
-
       {
         code: 'new Date("12.0")',
         options: [
@@ -1025,18 +1211,7 @@
           'Invalid Date'
         ],
         correct: 3,
-        explanation: 'Adding ".0" makes it invalid, even though 12.0 === 12 in JavaScript!'
-      },
-      {
-        code: 'new Date("12.1")',
-        options: [
-          '2001-12-01T00:00:00.100Z',
-          '2001-01-01T00:00:00.000Z',
-          '2012-01-01T00:00:00.000Z',
-          'Invalid Date'
-        ],
-        correct: 1,
-        explanation: '"12.1" is somehow valid and gives January 2001. The parser gives up on the decimal.'
+        explanation: 'The .0 is still interpreted as a day, and no month has a 0th day, so this is considered invalid.'
       },
 
       {
@@ -1048,7 +1223,18 @@
           'Throws an error'
         ],
         correct: 1,
-        explanation: 'Leading text is ignored! It finds the "1" and parses it as year 2001.'
+        explanation: 'Leading text is always ignored! It finds the "1" and parses it as year 2001.'
+      },
+      {
+        code: 'new Date("perhaps")',
+        options: [
+          'Invalid Date',
+          '2001-01-01T00:00:00.000Z',
+          '1970-01-01T00:00:01.000Z',
+          'Throws an error'
+        ],
+        correct: 0,
+        explanation: 'But you can\'t <i>just</i> have text! It needs a number to parse, so this is Invalid Date.'
       },
       {
         code: 'new Date("maybe 1")',
@@ -1059,8 +1245,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: '"may" in "maybe" is parsed as the month May! Then "be 1" becomes day 1.',
-        timezoneNote: 'Note: The exact time may vary based on your timezone.'
+        explanation: '"may" in "maybe" is parsed as the month May! And for some reason this expression cares about your local timezone, which happens to be BST for me right now.',
       },
       {
         code: 'new Date("fourth of may 2010")',
@@ -1071,10 +1256,52 @@
           '2010-05-01T00:00:00.000Z'
         ],
         correct: 2,
-        explanation: 'It parses "fourth" as 4, finds "may" as the month, and 2010 as the year.',
-        timezoneNote: 'Note: The exact time may vary based on your timezone.'
+        explanation: '"fourth of" is ignored, this is just parsing "may 2010" and again local timezone is important.',
       },
-
+      {
+        code: 'new Date("May 4 UTC")',
+        options: [
+          'Invalid Date',
+          '2001-05-04T00:00:00.000Z',
+          '2010-04-30T23:00:00.000Z',
+          '2010-05-01T00:00:00.000Z'
+        ],
+        correct: 1,
+        explanation: 'UTC is correctly parsed as a timezone.',
+      },
+      {
+        code: 'new Date("May 4 UTC+1")',
+        options: [
+          'Invalid Date',
+          '2001-05-04T00:00:00.000Z',
+          '2001-05-03T23:00:00.000Z',
+          '2010-05-01T00:00:00.000Z'
+        ],
+        correct: 2,
+        explanation: 'You can add modifiers to timezones and it works as you would expect.',
+      },
+      {
+        code: 'new Date("May 4 UTC+1:59")',
+        options: [
+          'Invalid Date',
+          '2001-05-04T00:00:00.000Z',
+          '2001-05-03T22:01:00.000Z',
+          'Throws an error'
+        ],
+        correct: 2,
+        explanation: 'It also supports minutes!',
+      },
+      {
+        code: 'new Date("May 4 UTC+1:60")',
+        options: [
+          'Invalid Date',
+          '2001-05-04T00:00:00.000Z',
+          '2001-05-03T22:00:00.000Z',
+          '1960-05-03T23:00:00.000Z'
+        ],
+        correct: 3,
+        explanation: 'Until it doesn\'t! 60 is being parsed as the year here, UTC+1 is the timezone.',
+      },
       {
         code: 'new Date("1990 2010")',
         options: [
@@ -1084,7 +1311,7 @@
           'Invalid Date'
         ],
         correct: 3,
-        explanation: 'Two years without parentheses confuses the parser - Invalid Date.'
+        explanation: 'No tricks here, just a plain ol\' Invalid Date.'
       },
       {
         code: 'new Date("1990 (2010)")',
@@ -1095,7 +1322,7 @@
           'Invalid Date'
         ],
         correct: 0,
-        explanation: 'Parentheses make the parser ignore what\'s inside! Uses 1990.'
+        explanation: 'For some reason, parenthesised text is ignored.'
       },
       {
         code: 'new Date("(1990) 2010")',
@@ -1106,14 +1333,43 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'With the first year in parentheses, it\'s ignored and 2010 is used!'
+        explanation: 'Regardless where it is.'
       }
     ];
 
-    const questions = rawQuestions.map(question => ({
-      ...question,
-      highlightedCode: highlightJS(question.code)
-    }));
+    // Shuffle array utility function
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // Process questions with randomized answer order
+    const questions = rawQuestions.map(question => {
+      // Create array of options with their original indices
+      const optionsWithIndices = question.options.map((option, index) => ({
+        text: option,
+        originalIndex: index
+      }));
+      
+      // Shuffle the options
+      const shuffledOptions = shuffleArray(optionsWithIndices);
+      
+      // Find where the originally correct answer ended up
+      const newCorrectIndex = shuffledOptions.findIndex(
+        option => option.originalIndex === question.correct
+      );
+      
+      return {
+        ...question,
+        options: shuffledOptions.map(option => option.text),
+        correct: newCorrectIndex,
+        highlightedCode: highlightJS(question.code)
+      };
+    });
 
     let currentQuestionIndex = 0;
     let score = 0;
@@ -1161,13 +1417,6 @@
       explanation.style.visibility = 'hidden';
       document.getElementById('nextButton').classList.add('hidden');
 
-      if (question.timezoneNote) {
-        document.getElementById('timezoneNote').textContent = question.timezoneNote;
-        document.getElementById('timezoneNote').classList.remove('hidden');
-      } else {
-        document.getElementById('timezoneNote').classList.add('hidden');
-      }
-
       answered = false;
       if (!preserveAnswer) {
         chosenAnswer = null;
@@ -1197,7 +1446,7 @@
       options.forEach(option => option.classList.add('disabled'));
 
       const explanation = document.getElementById('explanation');
-      explanation.innerHTML = question.explanation;
+      explanation.innerHTML = `<p>${question.explanation}</p>`;
       explanation.style.visibility = 'visible';
       explanation.classList.add(isCorrect ? 'correct' : 'incorrect');
 
@@ -1224,34 +1473,46 @@
       const percentage = Math.round((score / questions.length) * 100);
       let message = '';
 
-      if (percentage === 100) {
-        message = 'Perfect! You truly understand the madness of JavaScript dates!';
+      if (percentage > 100) {
+        message = 'You figured out how to hack the score, nice work!';
+      }
+      else if (percentage === 100) {
+        message = 'Congrats, you cheated!';
       } else if (percentage >= 80) {
-        message = 'Excellent! You know your way around Date weirdness.';
+        message = 'It\'s concerning how well you know this.';
       } else if (percentage >= 60) {
-        message = 'Good job! JavaScript dates are tricky.';
-      } else if (percentage >= 40) {
-        message = 'Not bad! Date parsing is genuinely confusing.';
-      } else {
-        message = 'JavaScript dates are weird, aren\'t they?';
+        message = 'Good score! Now you just have to ask yourself why you know this.';
+      } else if (percentage >= 25) {
+        message = 'I\'s okay, Temporal is coming soon anyway.';
+      } else if (percentage >= 0) {
+        message = 'You would have scored higher by guessing at random.';
       }
 
       document.getElementById('resultMessage').textContent = message;
+
+      // Populate share message
+      const shareText = `I scored ${score}/${questions.length} on https://jsdate.wtf and all I got was this lousy text to share on social media.`;
+      document.getElementById('shareMessage').textContent = shareText;
+
       // Clear URL parameters when quiz is complete
       window.history.replaceState({}, '', window.location.pathname);
     }
 
+    function copyShareMessage() {
+      const shareMessage = document.getElementById('shareMessage').textContent;
+      navigator.clipboard.writeText(shareMessage);
+      showToast('Results copied to clipboard!');
+    }
+
     function shareResults() {
-      const score = document.getElementById('correctCount').textContent;
-      const total = document.getElementById('totalCount').textContent;
-      const text = `I scored ${score}/${total} on the JavaScript Date WTF Quiz! 🗓️\n\nThink you know JS dates? Try it at jsdate.wtf`;
+      const shareMessage = document.getElementById('shareMessage').textContent;
 
       if (navigator.share) {
         navigator.share({
-          text: text
+          text: shareMessage
         });
       } else {
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(shareMessage);
         showToast('Results copied to clipboard!');
       }
     }
