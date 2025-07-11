@@ -6,62 +6,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JS Date WTF - The JavaScript Date Quiz</title>
   <style>
-    /* Dark theme (default) */
     :root {
-      /* Colors - Wong Color Palette (Colorblind Friendly) */
-      --color-primary: #E69F00;
-      /* Orange */
-      --color-primary-hover: #CC8800;
-      /* Darker Orange */
-      --color-secondary: #0072B2;
-      /* Blue */
-      --color-secondary-hover: #005A8F;
-      /* Darker Blue */
-      --color-bg-dark: #0F0F0F;
-      /* Near Black */
-      --color-bg-medium: #1A1A1A;
-      /* Dark Gray */
-      --color-bg-light: #2A2A2A;
-      /* Medium Gray */
-      --color-bg-lighter: #3A3A3A;
-      /* Light Gray */
-      --color-text-primary: #F5F5F5;
-      /* Off White */
-      --color-text-secondary: #B0B0B0;
-      /* Light Gray Text */
-      --color-border: #404040;
-      /* Border Gray */
-      --color-border-hover: #505050;
-      /* Hover Border Gray */
-      --color-border-light: #484848;
-      /* Light Border Gray */
-      --color-error: #D55E00;
-      /* Vermillion/Red-Orange */
+      --wong-orange: #E69F00;
+      --wong-orange-dark: #CC8800;
+      --wong-sky-blue: #56B4E9;
+      --wong-bluish-green: #009E73;
+      --wong-yellow: #F0E442;
+      --wong-blue: #0072B2;
+      --wong-blue-dark: #005A8F;
+      --wong-vermillion: #D55E00;
+      --wong-red-purple: #CC79A7;
+      --wong-black: #000000;
+      --wong-grey: #999999;
+
+      --gray-50: #F5F5F5;
+      --gray-100: #E5E5E5;
+      --gray-200: #D4D4D4;
+      --gray-300: #B0B0B0;
+      --gray-400: #737373;
+      --gray-500: #525252;
+      --gray-600: #404040;
+      --gray-700: #2A2A2A;
+      --gray-800: #1A1A1A;
+      --gray-900: #0F0F0F;
+
+      --white: #FFFFFF;
+      --black: #000000;
+    }
+
+    :root {
+      --color-primary: var(--wong-orange);
+      --color-primary-hover: var(--wong-orange-dark);
+      --color-secondary: var(--wong-blue);
+      --color-secondary-hover: var(--wong-blue-dark);
+
+      --color-bg-dark: var(--gray-900);
+      --color-bg-medium: var(--gray-800);
+      --color-bg-light: var(--gray-700);
+      --color-bg-lighter: var(--gray-600);
+
+      --color-text-primary: var(--gray-50);
+      --color-text-secondary: var(--gray-300);
+
+      --color-border: var(--gray-600);
+      --color-border-hover: var(--gray-500);
+      --color-border-light: var(--gray-500);
+
+      --color-error: var(--wong-vermillion);
       --color-correct-bg: rgba(0, 158, 115, 0.15);
-      /* Green tint with transparency */
       --color-incorrect-bg: rgba(213, 94, 0, 0.15);
-      /* Vermillion tint with transparency */
-      --color-accent-green: #009E73;
-      /* Green from Wong palette */
-      --color-code-bg: #0F0F0F;
-      /* Code block background */
+      --color-accent-green: var(--wong-bluish-green);
+      --color-code-bg: var(--gray-900);
+
       --shadow-strength: 0.5;
 
-      /* Syntax highlighting colors */
-      --syntax-keyword: #56B4E9;
-      /* Sky Blue from Wong palette */
-      --syntax-string: #009E73;
-      /* Green from Wong palette */
-      --syntax-number: #F0E442;
-      /* Yellow from Wong palette */
-      --syntax-operator: #B0B0B0;
-      /* Grey for operators and punctuation */
-      --syntax-function: #E69F00;
-      /* Orange from Wong palette */
-      --syntax-comment: #B0B0B0;
-      /* Gray */
+      --syntax-keyword: var(--wong-sky-blue);
+      --syntax-string: var(--wong-bluish-green);
+      --syntax-number: var(--wong-yellow);
+      --syntax-operator: var(--gray-300);
+      --syntax-function: var(--wong-orange);
+      --syntax-comment: var(--gray-300);
 
-      /* Spacing */
       --spacing-xs: 4px;
       --spacing-sm: 8px;
       --spacing-md: 12px;
@@ -71,7 +76,6 @@
       --spacing-3xl: 30px;
       --spacing-4xl: 40px;
 
-      /* Typography */
       --font-system: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
       --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
       --font-size-sm: 0.9em;
@@ -82,83 +86,56 @@
       --font-size-3xl: 3em;
       --line-height: 1.6;
 
-      /* Border Radius */
       --radius-sm: 4px;
       --radius-md: 8px;
       --radius-lg: 12px;
 
-      /* Transitions */
       --transition-fast: 0.2s ease;
 
-      /* Shadows */
       --shadow-default: 0 4px 20px rgba(0, 0, 0, var(--shadow-strength));
       --shadow-subtle: 0 2px 8px rgba(0, 0, 0, calc(var(--shadow-strength) * 0.6));
 
-      /* Layout */
       --container-max-width: 600px;
 
-      /* Borders */
       --border-thin: 1px;
       --border-medium: 2px;
       --border-thick: 4px;
 
-      /* Components */
       --option-key-size: 30px;
     }
 
-    /* Light theme */
     [data-theme="light"] {
-      --color-primary: #CC7A00;
-      /* Darker Orange for better contrast */
+      --color-primary: var(--wong-orange-dark);
       --color-primary-hover: #B36A00;
-      /* Even darker Orange */
-      --color-secondary: #005A8F;
-      /* Darker Blue for better contrast */
+      --color-secondary: var(--wong-blue-dark);
       --color-secondary-hover: #004A7A;
-      /* Even darker Blue */
-      --color-bg-dark: #FFFFFF;
-      /* White */
+
+      --color-bg-dark: var(--white);
       --color-bg-medium: #F7F7F7;
-      /* Light Gray */
-      --color-bg-light: #EFEFEF;
-      /* Medium Gray */
-      --color-bg-lighter: #E5E5E5;
-      /* Darker Gray */
-      --color-text-primary: #1A1A1A;
-      /* Near Black */
-      --color-text-secondary: #606060;
-      /* Gray Text */
-      --color-border: #D0D0D0;
-      /* Light Border */
-      --color-border-hover: #B0B0B0;
-      /* Hover Border */
-      --color-border-light: #C0C0C0;
-      /* Light Border */
-      --color-error: #D55E00;
-      /* Vermillion/Red-Orange */
+      --color-bg-light: var(--gray-100);
+      --color-bg-lighter: var(--gray-200);
+
+      --color-text-primary: var(--gray-800);
+      --color-text-secondary: var(--gray-400);
+
+      --color-border: var(--gray-200);
+      --color-border-hover: var(--gray-300);
+      --color-border-light: var(--gray-100);
+
+      --color-error: var(--wong-vermillion);
       --color-correct-bg: rgba(0, 158, 115, 0.1);
-      /* Green tint with transparency */
       --color-incorrect-bg: rgba(213, 94, 0, 0.1);
-      /* Vermillion tint with transparency */
-      --color-accent-green: #009E73;
-      /* Green from Wong palette */
-      --color-code-bg: #F5F5F5;
-      /* Light code background */
+      --color-accent-green: var(--wong-bluish-green);
+      --color-code-bg: var(--gray-50);
+
       --shadow-strength: 0.15;
 
-      /* Syntax highlighting colors for light mode */
-      --syntax-keyword: #0072B2;
-      /* Blue from Wong palette */
-      --syntax-string: #009E73;
-      /* Green from Wong palette */
-      --syntax-number: #CC7A00;
-      /* Darker orange for contrast */
-      --syntax-operator: #D55E00;
-      /* Vermillion from Wong palette */
-      --syntax-function: #CC7A00;
-      /* Darker orange for contrast */
-      --syntax-comment: #606060;
-      /* Gray */
+      --syntax-keyword: var(--wong-blue);
+      --syntax-string: var(--wong-bluish-green);
+      --syntax-number: var(--wong-orange-dark);
+      --syntax-operator: var(--gray-300);
+      --syntax-function: var(--wong-orange-dark);
+      --syntax-comment: var(--gray-400);
     }
 
     * {
@@ -196,14 +173,12 @@
       margin-bottom: var(--spacing-4xl);
     }
 
-    /* Hide header during quiz and results */
     #quizScreen:not(.hidden)~.container header,
     #resultsScreen:not(.hidden)~.container header,
     .quiz-active header {
       display: none;
     }
 
-    /* Compact layout for quiz screens */
     .quiz-layout {
       display: flex;
       flex-direction: column;
@@ -231,6 +206,21 @@
       color: var(--color-text-secondary);
       font-size: var(--font-size-xl);
       margin-bottom: var(--spacing-4xl);
+      font-style: italic;
+    }
+
+    .subsubtitle {
+      color: var(--color-text-secondary);
+      font-family: var(--font-mono);
+      width: 75%;
+      margin: 0 auto;
+      font-size: var(--font-size-lg);
+      margin-bottom: var(--spacing-3xl);
+      font-style: italic;
+      background-color: var(--color-bg-light);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      text-wrap: balance;
     }
 
     .progress {
@@ -265,7 +255,6 @@
       margin-right: auto;
     }
 
-    /* Syntax highlighting styles */
     .syntax-keyword {
       color: var(--syntax-keyword);
       font-weight: bold;
@@ -324,7 +313,6 @@
     .option.selected {
       border-color: var(--color-primary);
       background-color: rgba(230, 159, 0, 0.15);
-      /* Orange tint */
     }
 
     .option.correct {
@@ -369,7 +357,6 @@
       margin-bottom: var(--spacing-xl);
       padding: var(--spacing-lg);
       padding-left: calc(var(--spacing-lg) + 40px);
-      /* Extra space for icon */
       background-color: var(--color-bg-light);
       border-radius: var(--radius-md);
       border-left: var(--border-thick) solid var(--color-accent-green);
@@ -382,7 +369,6 @@
       margin-left: auto;
       margin-right: auto;
       min-height: 100px;
-      /* Reserve minimum space */
     }
 
     .explanation.correct {
@@ -445,7 +431,6 @@
       transform: translateY(0);
     }
 
-    /* Position quiz buttons at bottom */
     .quiz-active .button {
       position: absolute;
       bottom: var(--spacing-xl);
@@ -502,7 +487,7 @@
 
     @media (max-width: 600px) {
       body {
-        padding: var(--spacing-sm);
+        padding: var(--spacing-md);
       }
 
       h1 {
@@ -512,6 +497,11 @@
       .subtitle {
         font-size: var(--font-size-lg);
         margin-bottom: var(--spacing-xl);
+      }
+
+      .subsubtitle {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-lg);
       }
 
       .code-block {
@@ -592,7 +582,6 @@
       opacity: 1;
     }
 
-    /* Theme toggle button */
     .theme-toggle {
       position: fixed;
       top: var(--spacing-xl);
@@ -627,7 +616,6 @@
       display: block;
     }
 
-    /* Hide/show icons based on theme */
     [data-theme="light"] .moon-icon {
       display: none;
     }
@@ -669,13 +657,14 @@
   <div class="container">
     <header>
       <h1 id="main-title">new Date("wtf")</h1>
-      <p class="subtitle">A quiz about JavaScript's Date weirdness</p>
+      <p class="subtitle">A quiz about the most bizarre date parser I've ever seen</p>
     </header>
 
     <div id="startScreen" class="start-screen">
-      <p style="margin-bottom: var(--spacing-3xl);">Think you understand JavaScript's Date constructor? Think again!
-        This quiz
-        explores the bizarre and unexpected behaviors of Date parsing.</p>
+      <p class="subsubtitle">
+        All questions verified using NodeJS 24.4.0 on
+        a MacBook Pro set to the BST timezone (UTC+1).
+      </p>
       <button class="button" onclick="startQuiz()">Start Quiz</button>
     </div>
 
@@ -725,7 +714,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       setTheme(getTheme());
-      // Add syntax highlighting to main title
       const mainTitle = document.getElementById('main-title');
       if (mainTitle) {
         mainTitle.innerHTML = highlightJS('new Date("wtf")');
@@ -755,7 +743,6 @@
         while (i < code.length) {
           const char = code[i];
 
-          // Skip whitespace
           if (/\s/.test(char)) {
             let whitespace = '';
             while (i < code.length && /\s/.test(code[i])) {
@@ -766,7 +753,6 @@
             continue;
           }
 
-          // String literals
           if (char === '"' || char === "'") {
             const quote = char;
             let string = char;
@@ -783,7 +769,7 @@
             }
 
             if (i < code.length) {
-              string += code[i]; // closing quote
+              string += code[i];
               i++;
             }
 
@@ -791,7 +777,6 @@
             continue;
           }
 
-          // Numbers
           if (/\d/.test(char)) {
             let number = '';
             while (i < code.length && /[\d.]/.test(code[i])) {
@@ -802,7 +787,6 @@
             continue;
           }
 
-          // Identifiers and keywords
           if (/[a-zA-Z_$]/.test(char)) {
             let identifier = '';
             while (i < code.length && /[a-zA-Z0-9_$]/.test(code[i])) {
@@ -810,28 +794,29 @@
               i++;
             }
 
-            // Check if it's followed by parentheses (function call)
+            const builtinConstructors = new Set(['Date', 'Array', 'Object', 'String', 'Number', 'Boolean', 'RegExp', 'Math', 'JSON']);
+
             let j = i;
             while (j < code.length && /\s/.test(code[j])) j++;
 
-            if (j < code.length && code[j] === '(') {
-              tokens.push({ type: 'function', value: identifier });
-            } else if (keywords.has(identifier)) {
+            if (keywords.has(identifier)) {
               tokens.push({ type: 'keyword', value: identifier });
+            } else if (builtinConstructors.has(identifier)) {
+              tokens.push({ type: 'function', value: identifier });
+            } else if (j < code.length && code[j] === '(') {
+              tokens.push({ type: 'function', value: identifier });
             } else {
               tokens.push({ type: 'identifier', value: identifier });
             }
             continue;
           }
 
-          // Operators and punctuation
           if (operators.has(char)) {
             tokens.push({ type: 'operator', value: char });
             i++;
             continue;
           }
 
-          // Everything else
           tokens.push({ type: 'other', value: char });
           i++;
         }
@@ -863,7 +848,6 @@
     }
 
     const rawQuestions = [
-      // Basic number/string confusion
       {
         code: 'new Date("0")',
         options: [
@@ -898,7 +882,6 @@
         explanation: 'Both parse to 946684800000 milliseconds! The number 0 is coerced to the string "0".'
       },
 
-      // Invalid dates that are still Date objects
       {
         code: 'new Date("not a date")',
         options: [
@@ -944,7 +927,6 @@
         explanation: 'toTimeString() returns the string "Invalid Date" for invalid dates.'
       },
 
-      // Single/double digit parsing
       {
         code: 'new Date("1")',
         options: [
@@ -954,7 +936,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'Single digit "1" is interpreted as year 2001, not as 1 millisecond or year 1!'
+        explanation: 'Just like "0", "1" is interpreted as year 2001, not as a timestamp!'
       },
       {
         code: 'new Date("2")',
@@ -965,7 +947,7 @@
           'Invalid Date'
         ],
         correct: 2,
-        explanation: '"2" after "1" adds a month, not a year! So it\'s February 2001.'
+        explanation: 'For reasons not obvious to me, "2" is interpreted as February 2001 (month 2).'
       },
       {
         code: 'new Date("99") > new Date("100")',
@@ -1001,7 +983,6 @@
         explanation: '"12" is interpreted as December 2001 (month 12).'
       },
 
-      // Decimal weirdness
       {
         code: 'new Date("12.0")',
         options: [
@@ -1025,7 +1006,6 @@
         explanation: '"12.1" is somehow valid and gives January 2001. The parser gives up on the decimal.'
       },
 
-      // Text prefix parsing
       {
         code: 'new Date("perhaps 1")',
         options: [
@@ -1062,7 +1042,6 @@
         timezoneNote: 'Note: The exact time may vary based on your timezone.'
       },
 
-      // Parentheses magic
       {
         code: 'new Date("1990 2010")',
         options: [
@@ -1098,7 +1077,6 @@
       }
     ];
 
-    // Pre-process all questions to add syntax highlighting
     const questions = rawQuestions.map(question => ({
       ...question,
       highlightedCode: highlightJS(question.code)
@@ -1259,7 +1237,6 @@
       document.body.classList.remove('quiz-active');
     }
 
-    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (document.getElementById('quizScreen').classList.contains('hidden')) return;
 
