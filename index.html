@@ -1132,7 +1132,7 @@
           'NaN'
         ],
         correct: 0,
-        explanation: 'And for some reason "32" to "49" is 2032-2049, while "50" onwards is 1950+. So 2032 > 1950!'
+        explanation: 'And for some reason "32" to "49" is 2032-2049, while "50" onwards is 1950+. So 2049 > 1950!'
       },
       {
         code: 'new Date("12.1")',
@@ -1143,7 +1143,7 @@
           'Invalid Date'
         ],
         correct: 0,
-        explanation: '"12.1" is interpreted as the date December 1st, and as before with dates without a year the default year is 2001 because of course.'
+        explanation: '"12.1" is interpreted as the date December 1st, and as before for dates with no year the default is 2001 because of course.'
       },
       {
         code: 'new Date("12.0")',
@@ -1287,7 +1287,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'Regardless where it is.'
+        explanation: 'No matter where it is.'
       },
       {
         code: 'new Date(-[])',
@@ -1428,17 +1428,18 @@
 
       if (percentage > 100) {
         message = 'You figured out how to hack the score, nice work!';
-      }
-      else if (percentage === 100) {
+      } else if (percentage === 100) {
         message = 'Congrats, you cheated!';
       } else if (percentage >= 80) {
-        message = 'It\'s concerning how well you know this.';
+        message = 'It\'s concerning how well you know the JavaScript Date class.';
       } else if (percentage >= 60) {
-        message = 'Good score! Now you just have to ask yourself why you know this.';
+        message = 'Good score! Now you just have to ask yourself why you know this much about the JavaScript Date class.';
       } else if (percentage >= 25) {
         message = 'I\'s okay, Temporal is coming soon anyway.';
       } else if (percentage >= 0) {
         message = 'You would have scored higher by guessing at random.';
+      } else if (percentage < 0) {
+        message = 'The smart people that figured out how to hack the score gave themselves values above 0, doofus.';
       }
 
       document.getElementById('resultMessage').textContent = message;
