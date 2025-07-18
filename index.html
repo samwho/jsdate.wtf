@@ -167,7 +167,6 @@
       align-items: center;
       padding: var(--spacing-xl);
       line-height: var(--line-height);
-      overflow: hidden;
     }
 
     @supports (height: 100dvh) {
@@ -298,7 +297,10 @@
     }
 
 
-    .code-block {
+    .code-block-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 100%;
       background-color: var(--color-code-bg);
       border: var(--border-medium) solid var(--color-border);
@@ -312,6 +314,7 @@
       max-width: 600px;
       text-align: center;
       text-wrap: nowrap;
+      min-height: 4rem;
     }
 
     .syntax-keyword {
@@ -611,7 +614,7 @@
         font-size: var(--font-size-base);
       }
 
-      .code-block {
+      .code-block-container {
         font-size: var(--font-size-base);
         padding: var(--spacing-lg);
       }
@@ -764,7 +767,9 @@
         Question <span id="currentQuestion">1</span> of <span id="totalQuestions">20</span>
       </div>
 
-      <div class="code-block" id="codeBlock"></div>
+      <div class="code-block-container">
+        <div class="code-block" id="codeBlock"></div>
+      </div>
       <div class="explanation" id="explanation"></div>
 
       <div class="options" id="options"></div>
