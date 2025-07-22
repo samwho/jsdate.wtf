@@ -996,17 +996,6 @@
 
     const rawQuestions = [
       {
-        code: 'new Date("0")',
-        options: [
-          '1970-01-01T00:00:00.000Z',
-          '2000-01-01T00:00:00.000Z',
-          'Invalid Date',
-          'Throws an error'
-        ],
-        correct: 1,
-        explanation: 'The string "0" is interpreted as the year 2000, not as a timestamp!'
-      },
-      {
         code: 'new Date(0)',
         options: [
           '1970-01-01T00:00:00.000Z',
@@ -1015,7 +1004,18 @@
           'Throws an error'
         ],
         correct: 0,
-        explanation: 'The <i>number</i> 0, as opposed to the string "0", is interpreted as milliseconds since the Unix epoch (Jan 1, 1970).'
+        explanation: 'The number 0 when passed to the constructor, is treated as a timestamp milliseconds since the Unix epoch (Jan 1, 1970). This is true for any number.'
+      },
+      {
+        code: 'new Date("0")',
+        options: [
+          '1970-01-01T00:00:00.000Z',
+          '2000-01-01T00:00:00.000Z',
+          'Invalid Date',
+          'Throws an error'
+        ],
+        correct: 1,
+        explanation: 'You might have expected the string to be coerced to a number, but the constructor supports string inputs as an overload so this doesnt happen. When passing a <i>string<i/> to new Date that string gets passed to Date.parse in order to get the timestamp.'
       },
       {
         code: 'Date.parse(0) === Date.parse("0")',
@@ -1038,7 +1038,7 @@
           'Throws an error'
         ],
         correct: 2,
-        explanation: 'Invalid Date is still a Date object! It\'s not null or an error.'
+        explanation: 'Invalid Date is still a Date object! It\'s not null or an error. The \'new\' keyword creates a new object anw will return that unless the constructor returns another object. This means the result of \'new\' can never be a primitive like null or undefined.'
       },
       {
         code: 'new Date("not a date").getTime()',
@@ -1049,7 +1049,7 @@
           'Throws an error'
         ],
         correct: 1,
-        explanation: 'Invalid Date objects return NaN for getTime(). This function returns the number of milliseconds since the Unix epoch for valid dates.'
+        explanation: 'A Date is stored internally as a millisecond timestamp. For an invalid date this is NaN. The getTime method simply returns this value.'
       },
       {
         code: 'new Date("not a date").toISOString()',
@@ -1060,7 +1060,7 @@
           'Throws an error'
         ],
         correct: 3,
-        explanation: 'toISOString() throws a RangeError on Invalid Date objects.'
+        explanation: 'Since there is no valid way to express an invalid date in the ISO string, toISOString() throws a RangeError on Invalid Date objects. As such the returned value is guaranteed to be a valid ISO string.'
       },
       {
         code: 'new Date("not a date").toTimeString()',
@@ -1073,7 +1073,28 @@
         correct: 0,
         explanation: 'toTimeString() returns the string "Invalid Date" for invalid dates. 🫠'
       },
-
+      {
+        code: 'new Date("99") > new Date("100")',
+        options: [
+          'true',
+          'false',
+          'Throws an error',
+          'NaN'
+        ],
+        correct: 0,
+        explanation: '"99" is year 1999, while "100" is year 0100. 1999 > 0100! Date reads 1 or 2 digit years (0-99) assuming the first 2 were dropped. Example: The first Harry Potter book released 26 June 97 meaning in 1997.'
+      },
+      {
+        code: 'new Date("49") > new Date("50")',
+        options: [
+          'true',
+          'false',
+          'Throws an error',
+          'NaN'
+        ],
+        correct: 0,
+        explanation: 'The convention for this shorthand is for 00-49 to be 20XX, while 50-99 is 19XX. So 2049 > 1950!'
+      },
       {
         code: 'new Date("1")',
         options: [
@@ -1083,18 +1104,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'Just like "0", "1" is interpreted as a year, so this is 2000+1.'
-      },
-      {
-        code: 'new Date("2")',
-        options: [
-          '2002-01-01T00:00:00.000Z',
-          '2001-01-02T00:00:00.000Z',
-          '2001-02-01T00:00:00.000Z',
-          'Invalid Date'
-        ],
-        correct: 2,
-        explanation: 'Except for some reason "2" is interpreted as a month, and the year is set to 2001.'
+        explanation: 'Unlike "0", "1" is interpreted as a month, This is because 1 is a valid month number and V8 will try to read MD(Y) format.'
       },
       {
         code: 'new Date("12")',
@@ -1116,29 +1126,7 @@
           'Invalid Date'
         ],
         correct: 3,
-        explanation: '"13" would be month 13, which doesn\'t exist, so it\'s Invalid Date.'
-      },
-      {
-        code: 'new Date("99") > new Date("100")',
-        options: [
-          'true',
-          'false',
-          'Throws an error',
-          'NaN'
-        ],
-        correct: 0,
-        explanation: '"99" is year 1999, while "100" is year 0100. 1999 > 0100! Date starts interpreting numbers as years starting at "32".'
-      },
-      {
-        code: 'new Date("49") > new Date("50")',
-        options: [
-          'true',
-          'false',
-          'Throws an error',
-          'NaN'
-        ],
-        correct: 0,
-        explanation: 'And for some reason "32" to "49" is 2032-2049, while "50" onwards is 1950+. So 2049 > 1950!'
+        explanation: '"13" would be month 13, which doesn\'t exist, so it\'s Invalid Date. V8 Decided that if the first component of a date is a valid day (i.e 1-31) then assume MD(Y) format. At this point you are probably wondering how 2001 comes into the picture, and it actually not that surprising. After the numbers are extracted from the string they are stored in an array of size 3. While ensuring month and day arent 0 the last two elements are set to 1 assuming YMD format, but when the format provided isnt ISO and the first component is 1-31 V8 tries to read it as MD(Y) where month is set to comp[0](the one component we provided) while 1 and 2 (day and year) were set to 1 under the assumption it was month and day. This leaves year as 1 and as before that means 20XX so it become 2001.'
       },
       {
         code: 'new Date("12.1")',
@@ -1171,7 +1159,7 @@
           'Invalid Date'
         ],
         correct: 0,
-        explanation: 'The dash here is ignored, so this is interpreted the same as "12.1".'
+        explanation: 'The dash here is ignored, so this is interpreted the same as "12.1". There are many common separators for the date components like \\/.,-|:;* even space and letters. That is why non numeric characters are treated as a separator unless it is valid as a date component lik Jan,Feb... etc.'
       },
 
       {
@@ -1183,7 +1171,7 @@
           'Throws an error'
         ],
         correct: 1,
-        explanation: 'Leading text is always ignored! It finds the "1" and parses it as year 2001.'
+        explanation: 'Leading text is always ignored! It finds the "1" and parses it as month 1.'
       },
       {
         code: 'new Date("perhaps")',
@@ -1205,7 +1193,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: '"may" in "maybe" is parsed as the month May! And for some reason this expression cares about your local timezone, which happens to be BST for me right now.',
+        explanation: '"may" in "maybe" is parsed as the month May! The spec also specifies that datetime strings without a timezone shall use your local timezone, which happens to be BST for me right now. Don\'t ask why it hasnt up until now! (note that the answers are ISO strings that end with "z", meaning UTC. From wikipedia: The time zone using UTC is sometimes denoted UTC+00:00 or by the letter Z—a reference to the equivalent nautical time zone (GMT), which has been denoted by a Z since about 1950. Since the NATO phonetic alphabet word for Z is "Zulu", UTC is sometimes known as "Zulu time")',
       },
       {
         code: 'new Date("fourth of may 2010")',
@@ -1260,7 +1248,7 @@
           '1960-05-03T23:00:00.000Z'
         ],
         correct: 3,
-        explanation: 'Until it doesn\'t! 60 is being parsed as the year here, UTC+1 is the timezone.',
+        explanation: 'Until it doesn\'t! 60 is not a valid minute component and is being parsed as the year here, UTC+1 is the timezone.',
       },
       {
         code: 'new Date("1990 2010")',
@@ -1271,7 +1259,7 @@
           'Invalid Date'
         ],
         correct: 3,
-        explanation: 'No tricks here, just a plain ol\' Invalid Date.'
+        explanation: 'No tricks here, just a plain ol\' Invalid Date. (No such thing as month 2010)'
       },
       {
         code: 'new Date("1990 (2010)")',
@@ -1304,7 +1292,7 @@
           'Invalid Date'
         ],
         correct: 0,
-        explanation: 'I couldn\'t resist. -[] is coerced to 0, which is interpreted as milliseconds since the Unix epoch (Jan 1, 1970).'
+        explanation: 'I couldn\'t resist. -[] is coerced to 0, which is interpreted as milliseconds since the Unix epoch (Jan 1, 1970). <br/> To be clear, all the weird date parsing here is V8 trying its best to make sense of what an end user might enter into a form. The spec only requires parsing to support the formats the different methods on the Date class can produce. Nearly all of these examples could have been invalid dates but the spec permits implementers to parse any other format as well.'
       }
     ];
 
