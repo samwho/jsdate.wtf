@@ -1073,7 +1073,6 @@
         correct: 0,
         explanation: 'toTimeString() returns the string "Invalid Date" for invalid dates. 🫠'
       },
-
       {
         code: 'new Date("1")',
         options: [
@@ -1083,7 +1082,7 @@
           'Invalid Date'
         ],
         correct: 1,
-        explanation: 'Just like "0", "1" is interpreted as a year, so this is 2000+1.'
+        explanation: 'Unlike "0", "1" is interpreted as a month, and the year defaults to 2001 for some reason.'
       },
       {
         code: 'new Date("2")',
@@ -1094,7 +1093,7 @@
           'Invalid Date'
         ],
         correct: 2,
-        explanation: 'Except for some reason "2" is interpreted as a month, and the year is set to 2001.'
+        explanation: '"2" is interpreted as February 2001 (month 2), as you might expect from the previous question.'
       },
       {
         code: 'new Date("12")',
@@ -1105,7 +1104,7 @@
           'Invalid Date'
         ],
         correct: 2,
-        explanation: '"12" is interpreted as December 2001 (month 12), as you might expect from the previous question.'
+        explanation: 'Also works for December.'
       },
       {
         code: 'new Date("13")',
@@ -1183,7 +1182,7 @@
           'Throws an error'
         ],
         correct: 1,
-        explanation: 'Leading text is always ignored! It finds the "1" and parses it as year 2001.'
+        explanation: 'Leading text is always ignored! It finds the "1" and parses it as the month January.'
       },
       {
         code: 'new Date("perhaps")',
