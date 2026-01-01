@@ -1366,12 +1366,12 @@
         keyDiv.className = 'option-key';
         keyDiv.textContent = (index + 1).toString();
 
-        const textDiv = document.createElement('div');
-        textDiv.className = 'option-text';
-        textDiv.textContent = option;
+        const text = document.createElement('span');
+        text.className = 'option-text';
+        text.textContent = option;
 
         button.appendChild(keyDiv);
-        button.appendChild(textDiv);
+        button.appendChild(text);
         optionsContainer.appendChild(button);
       });
 
