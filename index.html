@@ -405,6 +405,7 @@
 
     .option-text {
       font-family: var(--font-mono);
+      color: var(--color-text-primary);
       flex: 1;
       font-weight: bold;
       pointer-events: none;
@@ -1357,9 +1358,9 @@
       optionsContainer.innerHTML = '';
 
       question.options.forEach((option, index) => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'option';
-        optionDiv.onclick = () => selectOption(index);
+        const button = document.createElement('button');
+        button.className = 'option';
+        button.onclick = () => selectOption(index);
 
         const keyDiv = document.createElement('div');
         keyDiv.className = 'option-key';
@@ -1369,9 +1370,9 @@
         textDiv.className = 'option-text';
         textDiv.textContent = option;
 
-        optionDiv.appendChild(keyDiv);
-        optionDiv.appendChild(textDiv);
-        optionsContainer.appendChild(optionDiv);
+        button.appendChild(keyDiv);
+        button.appendChild(textDiv);
+        optionsContainer.appendChild(button);
       });
 
       const explanation = document.getElementById('explanation');
