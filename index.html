@@ -356,11 +356,8 @@
       background-color: var(--color-bg-light);
       border: var(--border-medium) solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: var(--spacing-lg) var(--spacing-xl);
       display: flex;
       align-items: center;
-      gap: var(--spacing-lg);
-      font-size: var(--font-size-base);
     }
 
     .option:hover:not(.disabled) {
@@ -399,15 +396,27 @@
       font-weight: bold;
       flex-shrink: 0;
       font-size: var(--font-size-base);
-      pointer-events: none;
+    }
+
+    .option-button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg) var(--spacing-xl);
+      font-family: var(--font-mono);
+      color: var(--color-text-primary);
+      gap: var(--spacing-lg);
+      background-color: inherit;
+      border: none;
+      font-size: var(--font-size-base);
+      text-align: center;
     }
 
     .option-text {
-      font-family: var(--font-mono);
       color: var(--color-text-primary);
       flex: 1;
       font-weight: bold;
-      pointer-events: none;
     }
 
     .explanation {
@@ -447,7 +456,6 @@
       padding: var(--spacing-lg) var(--spacing-3xl);
       font-size: var(--font-size-lg);
       font-weight: bold;
-      cursor: pointer;
       max-width: 250px;
       width: 100%;
     }
@@ -592,6 +600,10 @@
       font-style: italic;
     }
 
+    li {
+      list-style: none;
+    }
+
     @media (max-width: 600px) {
       body {
         padding: var(--spacing-sm);
@@ -625,8 +637,11 @@
       }
 
       .option {
-        padding: var(--spacing-md) var(--spacing-lg);
         font-size: var(--font-size-sm);
+      }
+
+      .option-button {
+        padding: var(--spacing-md) var(--spacing-lg);
       }
 
       .option-key {
@@ -773,7 +788,7 @@
       </div>
       <div class="explanation" id="explanation"></div>
 
-      <div class="options" id="options"></div>
+      <ul class="options" id="options"></ul>
 
       <button id="nextButton" class="button hidden" onclick="nextQuestion()">Next Question</button>
     </div>
@@ -1357,21 +1372,26 @@
       optionsContainer.innerHTML = '';
 
       question.options.forEach((option, index) => {
-        const button = document.createElement('button');
-        button.className = 'option';
-        button.onclick = () => selectOption(index);
-
-        const keyDiv = document.createElement('div');
-        keyDiv.className = 'option-key';
-        keyDiv.textContent = (index + 1).toString();
-
         const text = document.createElement('span');
         text.className = 'option-text';
         text.textContent = option;
 
-        button.appendChild(keyDiv);
+        const key = document.createElement('span');
+        key.className = 'option-key';
+        key.textContent = (index + 1).toString();
+
+        const button = document.createElement('button');
+        button.className = 'option-button';
+        button.onclick = () => selectOption(index);
+
+        button.appendChild(key);
         button.appendChild(text);
-        optionsContainer.appendChild(button);
+
+        const li = document.createElement('li');
+        li.className = 'option';
+        li.appendChild(button);
+
+        optionsContainer.appendChild(li);
       });
 
       const explanation = document.getElementById('explanation');
