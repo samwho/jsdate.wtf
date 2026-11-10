@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-jsdate.wtf is a single-page web application that presents an interactive quiz about JavaScript's Date object quirks and unexpected behaviors. The entire application is contained in a single `index.html` file with no external dependencies or build process required.
+jsdate.wtf is a single-page web application that presents an interactive quiz about JavaScript's Date object quirks and unexpected behaviors. The entire application is contained in a single `public/index.html` file with no external dependencies or build process required.
 
 ## Development Commands
 
@@ -12,13 +12,13 @@ This is a static HTML file with no build process. To develop locally:
 
 ```bash
 # Option 1: Open directly in browser
-open index.html
+open public/index.html
 
 # Option 2: Serve with Python
-python -m http.server 8000
+python -m http.server --directory public 8000
 
 # Option 3: Serve with Node.js
-npx serve
+npx serve public
 
 # Option 4: Use any static file server
 ```
@@ -27,7 +27,7 @@ npx serve
 
 The application follows a simple, self-contained architecture:
 
-- **Single File Application**: Everything is in `index.html` (HTML + CSS + JavaScript)
+- **Single File Application**: Everything is in `public/index.html` (HTML + CSS + JavaScript)
 - **No Dependencies**: Zero external libraries or frameworks
 - **No Build Process**: Can be edited and viewed directly
 - **Quiz Logic**: 20 hardcoded questions about JavaScript Date parsing edge cases
@@ -43,7 +43,7 @@ The application follows a simple, self-contained architecture:
 
 ## Deployment
 
-The site can be deployed to any static hosting service (GitHub Pages, Netlify, Vercel, etc.) by simply uploading the `index.html` file. No build or compilation step is required.
+Deploy only the contents of `public/`. Keep repository-only files outside that directory. On Laravel Cloud, use static serving with directory `public`, no build or start command, and edge-cache purging on deployment. No build or compilation step is required.
 
 ## Testing Note
 
